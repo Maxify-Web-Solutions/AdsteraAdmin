@@ -50,7 +50,6 @@ const register = async (req, res) => {
 
 
 const login = async (req, res) => {
-
   try {
 
     const { email, password } = req.body;
@@ -63,11 +62,19 @@ const login = async (req, res) => {
       });
     }
 
+    // check password
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(400).json({
         message: "Invalid credentials"
+      });
+    }
+
+    // check role
+    if (user.role !== "admin") {
+      return res.status(403).json({
+        message: "Access denied. Only admin can login."
       });
     }
 
@@ -95,7 +102,6 @@ const login = async (req, res) => {
     });
 
   }
-
 };
 
 
@@ -120,8 +126,6 @@ const logout = async (req, res) => {
     success: true,
     message: "Logged out"
   });
-
-
 };
 
 const getallusers = async (req, res) => {

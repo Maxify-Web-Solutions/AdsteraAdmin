@@ -1,51 +1,92 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import Header from "../Components/Header";
 
 const AdminLayout = () => {
 
+    const [open, setOpen] = useState(false);
+
     return (
         <>
-        <Header/>
-        <div className="flex min-h-screen bg-slate-900 text-white">
+            <Header />
 
-            {/* Sidebar */}
-            <aside className="w-64 bg-slate-800 border-r border-slate-700 p-6">
+            <div className="flex min-h-screen bg-slate-900 text-white">
 
-                <h2 className="text-xl font-bold mb-8 text-indigo-400">
-                    Admin Panel
-                </h2>
+                {/* Mobile Menu Button */}
+                <button
+                    onClick={() => setOpen(true)}
+                    className="lg:hidden fixed top-4 left-4 z-50 bg-slate-800 p-2 rounded"
+                >
+                    ☰
+                </button>
 
-                <nav className="flex flex-col gap-3">
 
-                    <Link to="/dashboard" className="px-4 py-2 rounded hover:bg-slate-700">
-                        Dashboard
-                    </Link>
+                {/* Sidebar */}
+                <aside
+                    className={`
+            fixed lg:static z-40
+            top-0 left-0 h-full w-64
+            bg-slate-800 border-r border-slate-700 p-6
+            transform transition-transform duration-300
+            ${open ? "translate-x-0" : "-translate-x-full"}
+            lg:translate-x-0
+          `}
+                >
 
-                    <Link to="/dashboard/users" className="px-4 py-2 rounded hover:bg-slate-700">
-                        Users
-                    </Link>
+                    {/* Close button (mobile only) */}
+                    <div className="flex justify-between items-center mb-8 lg:hidden">
 
-                    <Link to="/dashboard/packages" className="px-4 py-2 rounded hover:bg-slate-700">
-                        Packages
-                    </Link>
+                        <h2 className="text-xl font-bold text-indigo-400">
+                            Admin Panel
+                        </h2>
 
-                    <Link to="/dashboard/scraping" className="px-4 py-2 rounded hover:bg-slate-700">
-                        Scraping Data
-                    </Link>
+                        <button onClick={() => setOpen(false)}>
+                            ✕
+                        </button>
 
-                </nav>
+                    </div>
 
-            </aside>
+                    <h2 className="text-xl font-bold mb-8 text-indigo-400 hidden  lg:block">
+                        Admin Panel
+                    </h2>
 
-            {/* Right Content */}
-            <main className="flex-1 p-10">
+                    <nav className="flex flex-col gap-3 h-screen">
 
-                <Outlet />
+                        <Link
+                            to="/dashboard"
+                            onClick={() => setOpen(false)}
+                            className="px-4 py-2 rounded hover:bg-slate-700"
+                        >
+                            Dashboard
+                        </Link>
 
-            </main>
+                        <Link
+                            to="/dashboard/users"
+                            onClick={() => setOpen(false)}
+                            className="px-4 py-2 rounded hover:bg-slate-700"
+                        >
+                            Users
+                        </Link>
+                    </nav>
 
-        </div>
+                </aside>
+
+
+                {/* Overlay (mobile) */}
+                {open && (
+                    <div
+                        onClick={() => setOpen(false)}
+                        className="fixed inset-0 bg-black/50 lg:hidden"
+                    />
+                )}
+
+
+                {/* Main Content */}
+                <main className="flex-1 p-6 lg:p-10">
+                    <Outlet />
+                </main>
+
+            </div>
         </>
     );
 };
