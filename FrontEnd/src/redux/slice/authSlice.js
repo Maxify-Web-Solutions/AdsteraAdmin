@@ -64,6 +64,7 @@ export const getProfile = createAsyncThunk(
         try {
 
             const res = await api.get("/auth/profile");
+            
 
             return res.data.user;
 

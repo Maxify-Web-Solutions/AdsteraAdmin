@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 
 import LoginPage from "./Pages/LoginPage";
@@ -7,7 +7,7 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 
 import DashboardLayout from "./Pages/AdminLayout";
 import Dashboard from "./Pages/Dashboard";
-import Users from "./Components/Users"; 
+import Users from "./Components/Users";
 // import Packages from "./Pages/Packages";
 
 import { useDispatch } from "react-redux";
@@ -19,28 +19,24 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-  dispatch(getProfile());
-}, [dispatch]);
+    dispatch(getProfile());
+  }, [dispatch]);
 
   return (
     <Routes>
+
+      {/* Redirect root */}
+      <Route path="/" element={<Navigate to="/dashboard" />} />
 
       {/* Public Route */}
       <Route path="/login" element={<LoginPage />} />
 
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
-
         <Route path="/dashboard" element={<DashboardLayout />}>
-
           <Route index element={<Dashboard />} />
-
           <Route path="users" element={<Users />} />
-
-          {/* <Route path="packages" element={<Packages />} /> */}
-
         </Route>
-
       </Route>
 
     </Routes>
