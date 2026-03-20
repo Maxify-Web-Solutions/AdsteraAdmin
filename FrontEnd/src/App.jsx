@@ -13,6 +13,7 @@ import Users from "./Components/Users";
 import { useDispatch } from "react-redux";
 import { getProfile } from "./redux/slice/authSlice";
 import { useEffect } from "react";
+// import AdminProfilePage from "./Pages/Profile";
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
 
   return (
     <Routes>
+      
 
       {/* Public Route */}
       <Route path="/login" element={<LoginPage />} />
@@ -36,6 +38,7 @@ function App() {
           <Route index element={<Dashboard />} />
 
           <Route path="users" element={<Users />} />
+          {/* <Route path="profile" element={<AdminProfilePage />} /> */}
 
           {/* <Route path="packages" element={<Packages />} /> */}
 

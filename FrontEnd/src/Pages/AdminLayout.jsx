@@ -67,6 +67,13 @@ const AdminLayout = () => {
                         >
                             Users
                         </Link>
+                        <Link
+                            to="/dashboard/profile"
+                            onClick={() => setOpen(false)}
+                            className="px-4 py-2 rounded hover:bg-slate-700"
+                        >
+                            Profile
+                        </Link>
                     </nav>
 
                 </aside>
