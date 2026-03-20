@@ -11,7 +11,7 @@ const Header = () => {
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
-
+    
     const handleLogout = async () => {
         await dispatch(logoutUser());
         navigate("/login");
