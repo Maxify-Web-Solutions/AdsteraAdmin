@@ -398,3 +398,44 @@ exports.getAllSmartLinks = async (req, res) => {
         });
     }
 };
+
+
+exports.rejectSmartLink = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const smartLink = await SmartLink.findById(id);
+
+    if (!smartLink) {
+      return res.status(404).json({
+        success: false,
+        message: "SmartLink not found",
+      });
+    }
+
+    // Already rejected check
+    if (smartLink.status === "rejected") {
+      return res.status(400).json({
+        success: false,
+        message: "SmartLink already rejected",
+      });
+    }
+
+    // Update status
+    smartLink.status = "rejected";
+    await smartLink.save();
+
+    res.status(200).json({
+      success: true,
+      message: "SmartLink rejected successfully",
+      data: smartLink,
+    });
+
+  } catch (error) {
+    console.error("Reject SmartLink Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};

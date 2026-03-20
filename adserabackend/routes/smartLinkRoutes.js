@@ -36,6 +36,9 @@ router.get("/smart-links/approved", smartLinkController.getApprovedSmartLinks);
 router.get("/smart-links/rejected", smartLinkController.getRejectedSmartLinks);
 router.get("/admin/smart-links",  smartLinkController.getAllSmartLinks);
 
+router.put("/admin/smartlink/reject/:id",  smartLinkController.rejectSmartLink);
+
+
 
 
 // ================= PUBLIC =================
