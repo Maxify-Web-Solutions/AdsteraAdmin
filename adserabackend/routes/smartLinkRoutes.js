@@ -19,6 +19,7 @@ router.get("/my-links", authMiddleware, smartLinkController.getSmartLinksByUser)
 // ✅ Approve link
 router.put("/approve/:id", smartLinkController.approveSmartLink);
 
+router.put("/reject/:id", smartLinkController.rejectSmartLink);
 
 // ================= EXTERNAL SYSTEM =================
 

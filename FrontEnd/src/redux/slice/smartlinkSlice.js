@@ -42,13 +42,13 @@ export const approveSmartLink = createAsyncThunk(
     }
 );
 
-// ================= REJECT =================
+// ================= REJECT (✅ FIXED) =================
 export const rejectSmartLink = createAsyncThunk(
     "smartLink/reject",
     async (id, { rejectWithValue }) => {
         try {
             const res = await api.put(`/smartlink/reject/${id}`);
-            return res.data.smartLink;
+            return res.data.data; // ✅ FIX (backend returns data)
         } catch (err) {
             return rejectWithValue(err.response?.data || err.message);
         }
@@ -68,12 +68,12 @@ export const getSmartLinkStats = createAsyncThunk(
     }
 );
 
-// ================= STATUS (⚠️ FIXED PATHS) =================
+// ================= STATUS =================
 export const getPendingLinks = createAsyncThunk(
     "smartLink/pending",
     async (_, { rejectWithValue }) => {
         try {
-            const res = await api.get("/smartlink/smart-links/pending"); // ✅ FIX
+            const res = await api.get("/smartlink/smart-links/pending");
             return res.data.data;
         } catch (err) {
             return rejectWithValue(err.response?.data || err.message);
@@ -85,7 +85,7 @@ export const getApprovedLinks = createAsyncThunk(
     "smartLink/approved",
     async (_, { rejectWithValue }) => {
         try {
-            const res = await api.get("/smartlink/smart-links/approved"); // ✅ FIX
+            const res = await api.get("/smartlink/smart-links/approved");
             return res.data.data;
         } catch (err) {
             return rejectWithValue(err.response?.data || err.message);
@@ -97,7 +97,7 @@ export const getRejectedLinks = createAsyncThunk(
     "smartLink/rejected",
     async (_, { rejectWithValue }) => {
         try {
-            const res = await api.get("/smartlink/smart-links/rejected"); // ✅ FIX
+            const res = await api.get("/smartlink/smart-links/rejected");
             return res.data.data;
         } catch (err) {
             return rejectWithValue(err.response?.data || err.message);
@@ -122,9 +122,10 @@ const smartLinkSlice = createSlice({
     extraReducers: (builder) => {
         builder
 
-            // CREATE
+            // ================= CREATE =================
             .addCase(createSmartLink.pending, (state) => {
                 state.loading = true;
+                state.error = null;
             })
             .addCase(createSmartLink.fulfilled, (state, action) => {
                 state.loading = false;
@@ -135,7 +136,7 @@ const smartLinkSlice = createSlice({
                 state.error = action.payload;
             })
 
-            // USER LINKS
+            // ================= USER LINKS =================
             .addCase(getUserSmartLinks.pending, (state) => {
                 state.loading = true;
             })
@@ -148,30 +149,76 @@ const smartLinkSlice = createSlice({
                 state.error = action.payload;
             })
 
-            // APPROVE
-            .addCase(approveSmartLink.fulfilled, (state, action) => {
-                state.links = state.links.map((link) =>
-                    link._id === action.payload._id ? action.payload : link
-                );
-                state.pending = state.pending.filter((link) => link._id !== action.payload._id);
-                state.approved.unshift(action.payload);
+            // ================= APPROVE =================
+            .addCase(approveSmartLink.pending, (state) => {
+                state.loading = true;
             })
-            
-            // REJECT
-            .addCase(rejectSmartLink.fulfilled, (state, action) => {
+            .addCase(approveSmartLink.fulfilled, (state, action) => {
+                state.loading = false;
+
+                const updated = action.payload;
+
                 state.links = state.links.map((link) =>
-                    link._id === action.payload._id ? action.payload : link
+                    link._id === updated._id ? updated : link
                 );
-                state.pending = state.pending.filter((link) => link._id !== action.payload._id);
-                state.rejected.unshift(action.payload);
+
+                state.pending = state.pending.filter(
+                    (link) => link._id !== updated._id
+                );
+
+                state.rejected = state.rejected.filter(
+                    (link) => link._id !== updated._id
+                );
+
+                state.approved.unshift(updated);
+            })
+            .addCase(approveSmartLink.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             })
 
-            // STATS
+            // ================= REJECT =================
+            .addCase(rejectSmartLink.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(rejectSmartLink.fulfilled, (state, action) => {
+                state.loading = false;
+
+                const updated = action.payload;
+
+                state.links = state.links.map((link) =>
+                    link._id === updated._id ? updated : link
+                );
+
+                state.pending = state.pending.filter(
+                    (link) => link._id !== updated._id
+                );
+
+                state.approved = state.approved.filter(
+                    (link) => link._id !== updated._id
+                );
+
+                state.rejected.unshift(updated);
+            })
+            .addCase(rejectSmartLink.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+            // ================= STATS =================
+            .addCase(getSmartLinkStats.pending, (state) => {
+                state.loading = true;
+            })
             .addCase(getSmartLinkStats.fulfilled, (state, action) => {
+                state.loading = false;
                 state.stats = action.payload;
             })
+            .addCase(getSmartLinkStats.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
 
-            // STATUS
+            // ================= STATUS =================
             .addCase(getPendingLinks.fulfilled, (state, action) => {
                 state.pending = action.payload;
             })

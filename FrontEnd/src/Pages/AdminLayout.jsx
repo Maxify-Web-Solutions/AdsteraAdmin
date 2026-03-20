@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import Header from "../Components/Header";
 
@@ -10,17 +10,22 @@ const AdminLayout = () => {
     const isActive = (path) => location.pathname === path;
 
     const linkClass = (path) =>
-        `px-4 py-2 rounded-lg transition-all duration-200 relative
+        `px-4 py-2 rounded-lg transition-all duration-200
         ${isActive(path)
-            ? "bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-400 border-l-4 border-indigo-500 shadow-md"
+            ? "bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-400 border-l-4 border-indigo-500"
             : "hover:bg-slate-700/60 text-gray-300"
         }`;
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [location.pathname]); // ✅ FIX dependency
 
     return (
         <>
             <Header />
 
-            <div className="flex min-h-screen bg-slate-900 text-white">
+            {/* ✅ IMPORTANT: full screen height fix */}
+            <div className="flex h-[calc(100vh-64px)] bg-slate-900 text-white">
 
                 {/* Mobile Menu Button */}
                 <button
@@ -30,15 +35,16 @@ const AdminLayout = () => {
                     ☰
                 </button>
 
-                {/* Sidebar */}
+                {/* ✅ SIDEBAR FIXED */}
                 <aside
                     className={`
-                        fixed lg:static z-40
-                        top-0 left-0 h-full w-64
+                        fixed lg:sticky top-0 left-0
+                        h-screen w-64
                         bg-slate-800 border-r border-slate-700 p-6
                         transform transition-transform duration-300
                         ${open ? "translate-x-0" : "-translate-x-full"}
                         lg:translate-x-0
+                        overflow-y-auto
                     `}
                 >
 
@@ -54,7 +60,7 @@ const AdminLayout = () => {
                         Admin Panel
                     </h2>
 
-                    <nav className="flex flex-col gap-3 h-screen">
+                    <nav className="flex flex-col gap-3">
 
                         <Link to="/dashboard" onClick={() => setOpen(false)} className={linkClass("/dashboard")}>
                             Dashboard
@@ -95,8 +101,8 @@ const AdminLayout = () => {
                     />
                 )}
 
-                {/* Main Content */}
-                <main className="flex-1 p-6 lg:p-10">
+                {/* ✅ MAIN CONTENT SCROLLABLE */}
+                <main className="flex-1 ml-0 overflow-y-auto p-6 lg:p-10">
                     <Outlet />
                 </main>
 

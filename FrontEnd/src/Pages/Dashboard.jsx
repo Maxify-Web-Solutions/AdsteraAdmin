@@ -1,17 +1,29 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsers } from "../redux/slice/adminSlice";
+import { getPendingLinks, getApprovedLinks, getRejectedLinks } from "../redux/slice/smartlinkSlice";
+import SmartlinksChart from "../Components/SmartlinksChart";
+import QuickActions from "../Components/QuickActions";
+import { FaUser } from "react-icons/fa";
 
 const Dashboard = () => {
 
   const dispatch = useDispatch();
-  const { users, loading } = useSelector((state) => state.admin);
+  const { users, loading: usersLoading } = useSelector((state) => state.admin);
+  const { pending, approved, rejected, loading: linksLoading } = useSelector((state) => state.smartLink);
+
+      const { user } = useSelector((state) => state.auth);
+  
 
   useEffect(() => {
     dispatch(getUsers());
+    dispatch(getPendingLinks());
+    dispatch(getApprovedLinks());
+    dispatch(getRejectedLinks());
   }, [dispatch]);
 
   const recentUsers = users.slice(0, 5);
+  
 
   return (
     <div className="space-y-8">
@@ -24,14 +36,14 @@ const Dashboard = () => {
         </h1>
 
         <span className="text-sm text-gray-400">
-          Welcome back 👋
+          Welcome back 👋 {user?.name}
         </span>
 
       </div>
 
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
 
         {/* Users */}
         <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl hover:bg-slate-700 transition">
@@ -41,83 +53,105 @@ const Dashboard = () => {
           </h2>
 
           <p className="text-3xl sm:text-4xl font-bold mt-2 text-white">
-            {loading ? "..." : users.length}
+            {usersLoading ? "..." : users.length}
           </p>
 
         </div>
 
-        {/* Packages */}
+        {/* Approved */}
         <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl hover:bg-slate-700 transition">
 
-          <h2 className="text-gray-400 text-sm">
-            Active Packages
+          <h2 className="text-emerald-400 text-sm font-semibold uppercase tracking-wider">
+            Approved Links
           </h2>
 
           <p className="text-3xl sm:text-4xl font-bold mt-2 text-white">
-            0
+            {linksLoading ? "..." : approved.length}
           </p>
 
         </div>
 
-        {/* Scrapes */}
+        {/* Pending */}
         <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl hover:bg-slate-700 transition">
 
-          <h2 className="text-gray-400 text-sm">
-            Total Scrapes
+          <h2 className="text-amber-400 text-sm font-semibold uppercase tracking-wider">
+            Pending Links
           </h2>
 
           <p className="text-3xl sm:text-4xl font-bold mt-2 text-white">
-            0
+            {linksLoading ? "..." : pending.length}
+          </p>
+
+        </div>
+
+        {/* Rejected */}
+        <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl hover:bg-slate-700 transition">
+
+          <h2 className="text-rose-400 text-sm font-semibold uppercase tracking-wider">
+            Rejected Links
+          </h2>
+
+          <p className="text-3xl sm:text-4xl font-bold mt-2 text-white">
+            {linksLoading ? "..." : rejected.length}
           </p>
 
         </div>
 
       </div>
 
+      {/* Charts Section */}
+      <div className="w-full">
+        <SmartlinksChart 
+          pending={pending} 
+          approved={approved} 
+          rejected={rejected} 
+        />
+      </div>
 
       {/* Bottom Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         {/* Recent Users */}
-        <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl">
+        <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl flex flex-col">
 
-          <h2 className="text-lg sm:text-xl font-semibold mb-4">
+          <h2 className="text-lg sm:text-xl font-semibold mb-6 text-white">
             Recent Users
           </h2>
 
           {recentUsers.length === 0 ? (
 
-            <p className="text-gray-400">
-              No users yet
-            </p>
+            <div className="flex flex-col items-center justify-center py-8 text-slate-500">
+              <p>No users yet</p>
+            </div>
 
           ) : (
 
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
 
               {recentUsers.map((user) => (
 
                 <div
                   key={user._id}
-                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 bg-slate-700 px-4 py-3 rounded-lg"
+                  className="group flex items-center gap-3 p-3 rounded-lg hover:bg-slate-700/50 border border-transparent hover:border-slate-600 transition-all duration-200"
                 >
-
-                  <div>
-
-                    <p className="font-semibold text-white">
-                      {user.name}
-                    </p>
-
-                    <p className="text-xs text-gray-400">
-                      {user.email}
-                    </p>
-
+                  <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-indigo-400 font-bold text-sm border border-slate-600 shadow-sm group-hover:scale-105 transition-transform">
+                    {user.name ? user.name.charAt(0).toUpperCase() : <FaUser size={14} />}
                   </div>
 
-                  <span className="text-xs text-gray-400">
-                    {user.mobile}
-                  </span>
-
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-white truncate">{user.name}</p>
+                    <p className="text-xs text-slate-400 truncate">{user.email}</p>
+                  </div>
+                  
+                  <div className="flex flex-col items-end gap-1">
+                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium uppercase tracking-wide border ${
+                       user.role === 'admin' 
+                       ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' 
+                       : 'bg-slate-600/30 text-slate-400 border-slate-600'
+                     }`}>
+                       {user.role || 'User'}
+                     </span>
+                  </div>
                 </div>
 
               ))}
@@ -128,47 +162,8 @@ const Dashboard = () => {
 
         </div>
 
-
-        {/* System Info */}
-        <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl">
-
-          <h2 className="text-lg sm:text-xl font-semibold mb-4">
-            System Overview
-          </h2>
-
-          <div className="space-y-4 text-gray-300 text-sm">
-
-            <div className="flex justify-between">
-              <span>Server Status</span>
-              <span className="text-green-400">
-                ● Online
-              </span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Database</span>
-              <span className="text-green-400">
-                Connected
-              </span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Scraping Engine</span>
-              <span className="text-yellow-400">
-                Idle
-              </span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>System Version</span>
-              <span>
-                v1.0.0
-              </span>
-            </div>
-
-          </div>
-
-        </div>
+        {/* Quick Actions */}
+        <QuickActions />
 
       </div>
 
