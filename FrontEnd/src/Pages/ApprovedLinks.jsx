@@ -27,6 +27,7 @@ const ApprovedLinks = () => {
                         <thead className="bg-slate-700/50 text-slate-200 uppercase text-xs">
                             <tr>
                                 <th className="px-6 py-3">ID</th>
+                                <th className="px-6 py-3">User</th>
                                 <th className="px-6 py-3">Name</th>
                                 <th className="px-6 py-3">URL</th>
                                 <th className="px-6 py-3">Status</th>
@@ -36,12 +37,18 @@ const ApprovedLinks = () => {
                         <tbody className="divide-y divide-slate-700">
                             {loading ? (
                                 <tr>
-                                    <td colSpan="5" className="px-6 py-8 text-center text-white">Loading...</td>
+                                    <td colSpan="6" className="px-6 py-8 text-center text-white">Loading...</td>
                                 </tr>
                             ) : !error && links.length > 0 ? (
                                 links.map((item) => (
                                     <tr key={item._id} className="hover:bg-slate-700/30 transition">
                                         <td className="px-6 py-4">#{item.linkId}</td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-col">
+                                                <span className="text-white text-sm">{item.userId?.name || 'N/A'}</span>
+                                                <span className="text-xs text-slate-500">{item.userId?.email}</span>
+                                            </div>
+                                        </td>
                                         <td className="px-6 py-4 font-medium text-white">{item.name}</td>
                                         <td className="px-6 py-4">
                                             <span className="truncate max-w-[150px] block text-indigo-400">
@@ -60,7 +67,7 @@ const ApprovedLinks = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="5" className="px-6 py-8 text-center">
+                                    <td colSpan="6" className="px-6 py-8 text-center">
                                         {error ? <span className="text-red-400">{typeof error === 'object' ? error.message || JSON.stringify(error) : error}</span> : "No approved links found"}
                                     </td>
                                 </tr>

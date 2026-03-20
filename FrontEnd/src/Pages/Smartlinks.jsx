@@ -64,6 +64,7 @@ const Smartlinks = () => {
                         <thead className="bg-slate-700/50 text-slate-200 uppercase text-xs">
                             <tr>
                                 <th className="px-6 py-3">ID</th>
+                                <th className="px-6 py-3">User</th>
                                 <th className="px-6 py-3">Name</th>
                                 <th className="px-6 py-3">URL</th>
                                 <th className="px-6 py-3">Status</th>
@@ -75,6 +76,12 @@ const Smartlinks = () => {
                                 smartlinks.map((item) => (
                                     <tr key={item._id} className="hover:bg-slate-700/30 transition">
                                         <td className="px-6 py-4">#{item.linkId}</td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-col">
+                                                <span className="text-white text-sm">{item.userId?.name || 'N/A'}</span>
+                                                <span className="text-xs text-slate-500">{item.userId?.email}</span>
+                                            </div>
+                                        </td>
                                         <td className="px-6 py-4 font-medium text-white">{item.name}</td>
 
                                         {/* ✅ FIXED FIELD */}
@@ -102,7 +109,7 @@ const Smartlinks = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="5" className="px-6 py-8 text-center">
+                                    <td colSpan="6" className="px-6 py-8 text-center">
                                         {error ? <span className="text-red-400">{error}</span> : "No smartlinks found"}
                                     </td>
                                 </tr>
