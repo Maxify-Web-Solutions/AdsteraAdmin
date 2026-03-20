@@ -34,6 +34,8 @@ router.get("/stats/:linkId", smartLinkController.getSmartLinkStats);
 router.get("/smart-links/pending", smartLinkController.getPendingSmartLinks);
 router.get("/smart-links/approved", smartLinkController.getApprovedSmartLinks);
 router.get("/smart-links/rejected", smartLinkController.getRejectedSmartLinks);
+router.get("/admin/smart-links",  smartLinkController.getAllSmartLinks);
+
 
 
 // ================= PUBLIC =================
