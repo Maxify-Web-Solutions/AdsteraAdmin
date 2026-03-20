@@ -13,7 +13,11 @@ import Users from "./Components/Users";
 import { useDispatch } from "react-redux";
 import { getProfile } from "./redux/slice/authSlice";
 import { useEffect } from "react";
-// import AdminProfilePage from "./Pages/Profile";
+import Smartlinks from "./Pages/Smartlinks";
+import ApprovedLinks from "./Pages/ApprovedLinks";
+import PendingLinks from "./Pages/PendingLinks";
+import RejectedLinks from "./Pages/RejectedLinks";
+import Profile from "./Pages/Profile";
 
 function App() {
 
@@ -38,6 +42,11 @@ function App() {
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="users" element={<Users />} />
+          <Route path="all_Smartlinks" element={<Smartlinks />} />
+          <Route path="approved_Smartlinks" element={<ApprovedLinks />} />
+          <Route path="pending_Smartlinks" element={<PendingLinks />} />
+          <Route path="rejected_Smartlinks" element={<RejectedLinks />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
       </Route>
 

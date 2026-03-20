@@ -276,68 +276,68 @@ exports.redirectSmartLink = async (req, res) => {
 };
 
 exports.getPendingSmartLinks = async (req, res) => {
-  try {
-    const { page = 1, limit = 20 } = req.query;
+    try {
+        const { page = 1, limit = 20 } = req.query;
 
-    const data = await SmartLink.find({ status: "pending" })
-      .populate("userId", "name email")
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+        const data = await SmartLink.find({ status: "pending" })
+            .populate("userId", "name email")
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(Number(limit));
 
-    const total = await SmartLink.countDocuments({ status: "pending" });
+        const total = await SmartLink.countDocuments({ status: "pending" });
 
-    res.status(200).json({
-      success: true,
-      total,
-      data,
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
+        res.status(200).json({
+            success: true,
+            total,
+            data,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
 };
 
 exports.getApprovedSmartLinks = async (req, res) => {
-  try {
-    const { page = 1, limit = 20 } = req.query;
+    try {
+        const { page = 1, limit = 20 } = req.query;
 
-    const data = await SmartLink.find({ status: "approved" })
-      .populate("userId", "name email")
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+        const data = await SmartLink.find({ status: "approved" })
+            .populate("userId", "name email")
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(Number(limit));
 
-    const total = await SmartLink.countDocuments({ status: "approved" });
+        const total = await SmartLink.countDocuments({ status: "approved" });
 
-    res.status(200).json({
-      success: true,
-      total,
-      data,
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
+        res.status(200).json({
+            success: true,
+            total,
+            data,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
 };
 
 exports.getRejectedSmartLinks = async (req, res) => {
-  try {
-    const { page = 1, limit = 20 } = req.query;
+    try {
+        const { page = 1, limit = 20 } = req.query;
 
-    const data = await SmartLink.find({ status: "rejected" })
-      .populate("userId", "name email")
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+        const data = await SmartLink.find({ status: "rejected" })
+            .populate("userId", "name email")
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(Number(limit));
 
-    const total = await SmartLink.countDocuments({ status: "rejected" });
+        const total = await SmartLink.countDocuments({ status: "rejected" });
 
-    res.status(200).json({
-      success: true,
-      total,
-      data,
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
+        res.status(200).json({
+            success: true,
+            total,
+            data,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
 };
 

@@ -1,78 +1,67 @@
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// import { Mail, Shield, User, Save } from "lucide-react";
-// import { motion } from "framer-motion";
+import React from 'react'
+import { useSelector } from 'react-redux'
 
-// export default function AdminProfilePage() {
-//     return (
-//         <div className="min-h-screen bg-gray-50 p-6 flex justify-center items-start">
-//             <motion.div
-//                 initial={{ opacity: 0, y: 20 }}
-//                 animate={{ opacity: 1, y: 0 }}
-//                 transition={{ duration: 0.4 }}
-//                 className="w-full max-w-3xl"
-//             >
-//                 <Card className="rounded-2xl shadow-xl">
-//                     <CardHeader className="flex flex-col items-center gap-4">
-//                         <Avatar className="h-24 w-24">
-//                             <AvatarImage src="https://i.pravatar.cc/150?img=12" />
-//                             <AvatarFallback>AD</AvatarFallback>
-//                         </Avatar>
+const Profile = () => {
+    const { user } = useSelector((state) => state.auth)
 
-//                         <div className="text-center">
-//                             <CardTitle className="text-2xl font-bold">Admin Profile</CardTitle>
-//                             <p className="text-sm text-gray-500">Manage your admin account information</p>
-//                         </div>
-//                     </CardHeader>
+    if (!user) {
+        return <div className="text-white p-6">Loading profile...</div>
+    }
 
-//                     <CardContent className="space-y-6">
-//                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//                             <div className="space-y-2">
-//                                 <label className="text-sm font-medium flex items-center gap-2">
-//                                     <User size={16} /> Name
-//                                 </label>
-//                                 <Input placeholder="Admin Name" defaultValue="Super Admin" />
-//                             </div>
+    return (
+        <div className="space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <h1 className="text-2xl sm:text-3xl font-bold text-white">Profile</h1>
+            </div>
 
-//                             <div className="space-y-2">
-//                                 <label className="text-sm font-medium flex items-center gap-2">
-//                                     <Mail size={16} /> Email
-//                                 </label>
-//                                 <Input placeholder="admin@email.com" defaultValue="admin@email.com" />
-//                             </div>
-//                         </div>
+            <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 md:p-8 max-w-3xl">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-8">
+                    <div className="h-24 w-24 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-3xl font-bold border border-indigo-500/30">
+                        {user.name?.charAt(0).toUpperCase() || 'U'}
+                    </div>
+                    <div>
+                        <h2 className="text-2xl font-bold text-white">{user.name}</h2>
+                        <p className="text-slate-400">{user.email}</p>
+                        <div className="mt-2 flex gap-2">
+                            <span className="px-2 py-1 rounded text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 capitalize">
+                                {user.role}
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
-//                         <div className="space-y-2">
-//                             <label className="text-sm font-medium flex items-center gap-2">
-//                                 <Shield size={16} /> Role
-//                             </label>
-//                             <Input value="Administrator" disabled />
-//                         </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <label className="text-sm text-slate-400">Full Name</label>
+                        <div className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-slate-300">
+                            {user.name}
+                        </div>
+                    </div>
 
-//                         <div className="pt-4 flex justify-end">
-//                             <Button className="flex items-center gap-2">
-//                                 <Save size={16} /> Save Changes
-//                             </Button>
-//                         </div>
-//                     </CardContent>
-//                 </Card>
+                    <div className="space-y-2">
+                        <label className="text-sm text-slate-400">Email Address</label>
+                        <div className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-slate-300">
+                            {user.email}
+                        </div>
+                    </div>
 
-//                 <Card className="rounded-2xl shadow-lg mt-6">
-//                     <CardHeader>
-//                         <CardTitle className="text-lg">Security</CardTitle>
-//                     </CardHeader>
-//                     <CardContent className="space-y-4">
-//                         <div className="grid md:grid-cols-2 gap-4">
-//                             <Input placeholder="New Password" type="password" />
-//                             <Input placeholder="Confirm Password" type="password" />
-//                         </div>
+                    <div className="space-y-2">
+                        <label className="text-sm text-slate-400">Mobile Number</label>
+                        <div className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-slate-300">
+                            {user.mobile || 'Not provided'}
+                        </div>
+                    </div>
 
-//                         <Button className="w-full">Update Password</Button>
-//                     </CardContent>
-//                 </Card>
-//             </motion.div>
-//         </div>
-//     );
-// }
+                    <div className="space-y-2">
+                        <label className="text-sm text-slate-400">Account ID</label>
+                        <div className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-slate-300 font-mono text-sm">
+                            {user._id}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default Profile
