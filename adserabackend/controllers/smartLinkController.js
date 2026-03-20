@@ -276,68 +276,127 @@ exports.redirectSmartLink = async (req, res) => {
 };
 
 exports.getPendingSmartLinks = async (req, res) => {
-  try {
-    const { page = 1, limit = 20 } = req.query;
+    try {
+        const { page = 1, limit = 20 } = req.query;
 
-    const data = await SmartLink.find({ status: "pending" })
-      .populate("userId", "name email")
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+        const data = await SmartLink.find({ status: "pending" })
+            .populate("userId", "name email")
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(Number(limit));
 
-    const total = await SmartLink.countDocuments({ status: "pending" });
+        const total = await SmartLink.countDocuments({ status: "pending" });
 
-    res.status(200).json({
-      success: true,
-      total,
-      data,
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
+        res.status(200).json({
+            success: true,
+            total,
+            data,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
 };
 
 exports.getApprovedSmartLinks = async (req, res) => {
-  try {
-    const { page = 1, limit = 20 } = req.query;
+    try {
+        const { page = 1, limit = 20 } = req.query;
 
-    const data = await SmartLink.find({ status: "approved" })
-      .populate("userId", "name email")
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+        const data = await SmartLink.find({ status: "approved" })
+            .populate("userId", "name email")
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(Number(limit));
 
-    const total = await SmartLink.countDocuments({ status: "approved" });
+        const total = await SmartLink.countDocuments({ status: "approved" });
 
-    res.status(200).json({
-      success: true,
-      total,
-      data,
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
+        res.status(200).json({
+            success: true,
+            total,
+            data,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
 };
 
 exports.getRejectedSmartLinks = async (req, res) => {
-  try {
-    const { page = 1, limit = 20 } = req.query;
+    try {
+        const { page = 1, limit = 20 } = req.query;
 
-    const data = await SmartLink.find({ status: "rejected" })
-      .populate("userId", "name email")
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+        const data = await SmartLink.find({ status: "rejected" })
+            .populate("userId", "name email")
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(Number(limit));
 
-    const total = await SmartLink.countDocuments({ status: "rejected" });
+        const total = await SmartLink.countDocuments({ status: "rejected" });
 
-    res.status(200).json({
-      success: true,
-      total,
-      data,
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
+        res.status(200).json({
+            success: true,
+            total,
+            data,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
 };
 
+const SmartLink = require("../models/SmartLink");
+
+// 🔥 Get ALL SmartLinks (Admin Only)
+exports.getAllSmartLinks = async (req, res) => {
+    try {
+        // ✅ Role check (optional but recommended)
+        if (req.user.role !== "admin") {
+            return res.status(403).json({
+                success: false,
+                message: "Access denied. Admin only.",
+            });
+        }
+
+        // ✅ Query params (pagination + search)
+        const {
+            page = 1,
+            limit = 10,
+            search = "",
+        } = req.query;
+
+        const skip = (page - 1) * limit;
+
+        // 🔍 Search filter (optional - name/email/mobile)
+        let query = {};
+
+        if (search) {
+            query = {
+                $or: [
+                    { title: { $regex: search, $options: "i" } },
+                ],
+            };
+        }
+
+        // 📦 Fetch data
+        const smartLinks = await SmartLink.find(query)
+            .populate("userId", "name email mobile")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(Number(limit));
+
+        // 📊 Total count
+        const total = await SmartLink.countDocuments(query);
+
+        res.status(200).json({
+            success: true,
+            total,
+            page: Number(page),
+            pages: Math.ceil(total / limit),
+            count: smartLinks.length,
+            data: smartLinks,
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message,
+        });
+    }
+};
