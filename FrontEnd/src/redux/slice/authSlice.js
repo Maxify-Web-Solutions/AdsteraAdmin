@@ -64,7 +64,7 @@ export const getProfile = createAsyncThunk(
         try {
 
             const res = await api.get("/auth/profile");
-            
+
 
             return res.data.user;
 
@@ -97,6 +97,65 @@ export const logoutUser = createAsyncThunk(
                 error.response?.data?.message || "Logout failed"
             );
 
+        }
+    }
+);
+
+
+/* =========================
+   UPDATE USER
+========================= */
+export const updateUser = createAsyncThunk(
+    "auth/updateUser",
+    async ({ userId, name, email, mobile }, { rejectWithValue }) => {
+        try {
+            const res = await api.put(`/auth/update/${userId}`, {
+                name,
+                email,
+                mobile,
+            });
+
+            return res.data.user;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "Update failed"
+            );
+        }
+    }
+);
+
+
+/* =========================
+   BLOCK USER
+========================= */
+export const blockUser = createAsyncThunk(
+    "auth/blockUser",
+    async (userId, { rejectWithValue }) => {
+        try {
+            const res = await api.put(`/auth/block/${userId}`);
+            return res.data.user;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "Block failed"
+            );
+        }
+    }
+);
+
+
+/* =========================
+   UNBLOCK USER
+========================= */
+export const unblockUser = createAsyncThunk(
+    "auth/unblockUser",
+    async (userId, { rejectWithValue }) => {
+        try {
+            const res = await api.put(`/auth/unblock/${userId}`);
+            return res.data.user;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "Unblock failed"
+            );
         }
     }
 );
@@ -200,6 +259,63 @@ const authSlice = createSlice({
             })
 
             .addCase(logoutUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+            /* ===== UPDATE USER ===== */
+            .addCase(updateUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+
+            .addCase(updateUser.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload;
+            })
+
+            .addCase(updateUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+
+            /* ===== BLOCK USER ===== */
+            .addCase(blockUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+
+            .addCase(blockUser.fulfilled, (state, action) => {
+                state.loading = false;
+
+                // agar logged-in user ko block kiya hai toh update karo
+                if (state.user && state.user._id === action.payload._id) {
+                    state.user = action.payload;
+                }
+            })
+
+            .addCase(blockUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+
+            /* ===== UNBLOCK USER ===== */
+            .addCase(unblockUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+
+            .addCase(unblockUser.fulfilled, (state, action) => {
+                state.loading = false;
+
+                if (state.user && state.user._id === action.payload._id) {
+                    state.user = action.payload;
+                }
+            })
+
+            .addCase(unblockUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

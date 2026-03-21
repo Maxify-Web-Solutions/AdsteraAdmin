@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsers } from "../redux/slice/adminSlice";
-import { FaSearch, FaEdit, FaBan, FaUser, FaChevronLeft, FaChevronRight, FaEnvelope, FaPhone, FaCalendarAlt, FaShieldAlt, FaIdBadge, FaTimes, FaClock } from "react-icons/fa";
+import { getUsers} from "../redux/slice/adminSlice";
+import { unblockUser, updateUser, blockUser } from "../redux/slice/authSlice";
+import { FaSearch, FaEdit, FaBan, FaUser, FaChevronLeft, FaChevronRight, FaEnvelope, FaPhone, FaCalendarAlt, FaShieldAlt, FaIdBadge, FaTimes, FaClock, FaTrash, FaSave, FaUnlock } from "react-icons/fa";
 
 const Users = () => {
     const dispatch = useDispatch();
@@ -11,6 +12,8 @@ const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [usersPerPage] = useState(10);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [editData, setEditData] = useState({});
 
     useEffect(() => {
         dispatch(getUsers());
@@ -40,6 +43,32 @@ const Users = () => {
         if (pageNumber > 0 && pageNumber <= totalPages) {
             setCurrentPage(pageNumber);
         }
+    };
+
+    // Actions
+    const handleBlock = async (id) => {
+        if (window.confirm("Are you sure you want to block this user?")) {
+            await dispatch(blockUser(id));
+            dispatch(getUsers());
+        }
+    };
+
+    const handleUnblock = async (id) => {
+        if (window.confirm("Are you sure you want to unblock this user?")) {
+            await dispatch(unblockUser(id));
+            dispatch(getUsers());
+        }
+    };
+
+    const handleEditClick = (user) => {
+        setEditData(user);
+        setIsEditOpen(true);
+    };
+
+    const handleUpdate = (e) => {
+        e.preventDefault();
+        dispatch(updateUser({ id: editData._id, userData: editData }));
+        setIsEditOpen(false);
     };
 
     // Stats
@@ -177,12 +206,27 @@ const Users = () => {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
-                                                <button title="Edit User" className="p-2 text-blue-400 hover:text-white rounded-lg bg-blue-500/10 hover:bg-blue-500/20 transition border border-blue-500/20">
+                                                <button 
+                                                    onClick={() => handleEditClick(user)}
+                                                    title="Edit User" 
+                                                    className="p-2 text-blue-400 hover:text-white rounded-lg bg-blue-500/10 hover:bg-blue-500/20 transition border border-blue-500/20">
                                                     <FaEdit size={14} />
                                                 </button>
-                                                <button title="Block User" className="p-2 text-red-400 hover:text-white rounded-lg bg-red-500/10 hover:bg-red-500/20 transition border border-red-500/20">
-                                                    <FaBan size={14} />
-                                                </button>
+                                                {user.status === 'blocked' ? (
+                                                    <button 
+                                                        onClick={() => handleUnblock(user._id)}
+                                                        title="Unblock User" 
+                                                        className="p-2 text-emerald-400 hover:text-white rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 transition border border-emerald-500/20">
+                                                        <FaUnlock size={14} />
+                                                    </button>
+                                                ) : (
+                                                    <button 
+                                                        onClick={() => handleBlock(user._id)}
+                                                        title="Block User" 
+                                                        className="p-2 text-red-400 hover:text-white rounded-lg bg-red-500/10 hover:bg-red-500/20 transition border border-red-500/20">
+                                                        <FaBan size={14} />
+                                                    </button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
@@ -327,6 +371,67 @@ const Users = () => {
                                     )}
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit User Modal */}
+            {isEditOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 transition-opacity">
+                    <div className="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden transform transition-all relative">
+                        <div className="p-6">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-xl font-bold text-white">Edit User</h2>
+                                <button onClick={() => setIsEditOpen(false)} className="text-slate-400 hover:text-white transition">
+                                    <FaTimes size={20} />
+                                </button>
+                            </div>
+                            
+                            <form onSubmit={handleUpdate} className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Name</label>
+                                    <input 
+                                        type="text" 
+                                        value={editData.name || ''} 
+                                        onChange={(e) => setEditData({...editData, name: e.target.value})}
+                                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Email</label>
+                                    <input 
+                                        type="email" 
+                                        value={editData.email || ''} 
+                                        onChange={(e) => setEditData({...editData, email: e.target.value})}
+                                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Mobile</label>
+                                    <input 
+                                        type="text" 
+                                        value={editData.mobile || ''} 
+                                        onChange={(e) => setEditData({...editData, mobile: e.target.value})}
+                                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500"
+                                    />
+                                </div>
+                                <div className="pt-4 flex gap-3">
+                                    <button 
+                                        type="button"
+                                        onClick={() => setIsEditOpen(false)}
+                                        className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition font-medium"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        type="submit"
+                                        className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition font-medium flex items-center justify-center gap-2"
+                                    >
+                                        <FaSave /> Save Changes
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
