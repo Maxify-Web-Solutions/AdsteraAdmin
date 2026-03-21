@@ -285,5 +285,9 @@ module.exports = {
   login,
   getProfile,
   logout,
-  getallusers
+  getallusers,
+  blockUser,
+  unblockUser,
+  updateUser
+  
 };
