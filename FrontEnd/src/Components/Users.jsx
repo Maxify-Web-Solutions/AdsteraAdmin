@@ -128,8 +128,8 @@ const Users = () => {
                         <tbody className="divide-y divide-slate-700">
                             {currentUsers.length > 0 ? (
                                 currentUsers.map((user) => (
-                                    <tr 
-                                        key={user._id} 
+                                    <tr
+                                        key={user._id}
                                         onClick={() => setSelectedUser(user)}
                                         className={`hover:bg-slate-700/40 transition duration-200 cursor-pointer group ${user.role === 'admin' ? 'bg-purple-900/5' : ''}`}
                                     >
@@ -167,11 +167,10 @@ const Users = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-center">
-                                             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border ${
-                                                user.role === 'admin' 
-                                                ? 'bg-purple-500/10 text-purple-400 border-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.15)]' 
+                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border ${user.role === 'admin'
+                                                ? 'bg-purple-500/10 text-purple-400 border-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.15)]'
                                                 : 'bg-slate-700/50 text-slate-400 border-slate-600'
-                                            }`}>
+                                                }`}>
                                                 {user.role === 'admin' && <FaShieldAlt size={10} />}
                                                 {user.role || 'User'}
                                             </span>
@@ -232,10 +231,10 @@ const Users = () => {
             {selectedUser && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 transition-opacity">
                     <div className="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transform transition-all relative">
-                        
+
                         {/* Close Button */}
-                        <button 
-                            onClick={() => setSelectedUser(null)} 
+                        <button
+                            onClick={() => setSelectedUser(null)}
                             className="absolute top-4 right-4 z-10 text-white/70 hover:text-white transition p-2 bg-black/20 hover:bg-black/40 rounded-full backdrop-blur-md"
                         >
                             <FaTimes size={16} />
@@ -280,9 +279,50 @@ const Users = () => {
                                         <div className="flex items-center gap-2 mb-1 text-slate-500"><FaCalendarAlt size={12} /><span className="text-xs font-bold uppercase">Joined</span></div>
                                         <p className="text-slate-200 font-medium">{selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString() : 'N/A'}</p>
                                     </div>
-                                    <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
-                                        <div className="flex items-center gap-2 mb-1 text-slate-500"><FaClock size={12} /><span className="text-xs font-bold uppercase">Last Login</span></div>
-                                        <p className="text-slate-200 font-medium">{selectedUser.lastLogin ? new Date(selectedUser.lastLogin).toLocaleDateString() : 'Never'}</p>
+                                    {/* Last Login Full Details */}
+                                    <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50 space-y-3">
+
+                                        <div className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase">
+                                            <FaClock size={12} />
+                                            <span>Last Login Details</span>
+                                        </div>
+
+                                        {selectedUser?.lastLogin?.date ? (
+                                            <>
+                                                <div className="flex items-center justify-between text-sm">
+                                                    <span className="text-slate-400">Date & Time:</span>
+                                                    <span className="text-white font-medium">
+                                                        {new Date(selectedUser.lastLogin.date).toLocaleString()}
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex items-center justify-between text-sm">
+                                                    <span className="text-slate-400">IP Address:</span>
+                                                    <span className="text-slate-300">
+                                                        {selectedUser.lastLogin.ip || "N/A"}
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex items-center justify-between text-sm">
+                                                    <span className="text-slate-400">Device:</span>
+                                                    <span className="text-slate-300">
+                                                        {selectedUser.lastLogin.device || "Unknown"}
+                                                        {selectedUser.lastLogin.os ? ` (${selectedUser.lastLogin.os})` : ""}
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex items-center justify-between text-sm">
+                                                    <span className="text-slate-400">Browser:</span>
+                                                    <span className="text-slate-300">
+                                                        {selectedUser.lastLogin.browser || "Unknown"}
+                                                    </span>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="text-center text-slate-500 text-sm py-2">
+                                                No login activity found
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>

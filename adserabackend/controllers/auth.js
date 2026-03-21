@@ -1,6 +1,8 @@
 const User = require("../models/authmodel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const UAParser = require("ua-parser-js");
+
 
 const generateToken = (id) => {
   return jwt.sign(
@@ -49,9 +51,9 @@ const register = async (req, res) => {
 };
 
 
+
 const login = async (req, res) => {
   try {
-
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
@@ -62,7 +64,6 @@ const login = async (req, res) => {
       });
     }
 
-    // check password
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -71,12 +72,29 @@ const login = async (req, res) => {
       });
     }
 
-    // check role
     if (user.role !== "admin") {
       return res.status(403).json({
         message: "Access denied. Only admin can login."
       });
     }
+
+    // ✅ USER-AGENT PARSE
+    const ua = req.headers["user-agent"];
+    const parser = new UAParser(ua);
+    const device = parser.getDevice();
+    const os = parser.getOS();
+    const browser = parser.getBrowser();
+
+    // ✅ UPDATE LAST LOGIN
+    user.lastLogin = {
+      date: new Date(),
+      ip: req.ip || req.headers["x-forwarded-for"],
+      device: device.model || "Desktop",
+      os: os.name + " " + os.version,
+      browser: browser.name + " " + browser.version
+    };
+
+    await user.save();
 
     const token = generateToken(user._id);
 
@@ -96,11 +114,9 @@ const login = async (req, res) => {
     });
 
   } catch (error) {
-
     res.status(500).json({
       message: error.message
     });
-
   }
 };
 
