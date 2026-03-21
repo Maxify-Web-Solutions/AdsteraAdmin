@@ -280,50 +280,51 @@ const Users = () => {
                                         <p className="text-slate-200 font-medium">{selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString() : 'N/A'}</p>
                                     </div>
                                     {/* Last Login Full Details */}
-                                    <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50 space-y-3">
 
-                                        <div className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase">
-                                            <FaClock size={12} />
-                                            <span>Last Login Details</span>
-                                        </div>
+                                </div>
+                                <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50 space-y-3">
 
-                                        {selectedUser?.lastLogin?.date ? (
-                                            <>
-                                                <div className="flex items-center justify-between text-sm">
-                                                    <span className="text-slate-400">Date & Time:</span>
-                                                    <span className="text-white font-medium">
-                                                        {new Date(selectedUser.lastLogin.date).toLocaleString()}
-                                                    </span>
-                                                </div>
-
-                                                <div className="flex items-center justify-between text-sm">
-                                                    <span className="text-slate-400">IP Address:</span>
-                                                    <span className="text-slate-300">
-                                                        {selectedUser.lastLogin.ip || "N/A"}
-                                                    </span>
-                                                </div>
-
-                                                <div className="flex items-center justify-between text-sm">
-                                                    <span className="text-slate-400">Device:</span>
-                                                    <span className="text-slate-300">
-                                                        {selectedUser.lastLogin.device || "Unknown"}
-                                                        {selectedUser.lastLogin.os ? ` (${selectedUser.lastLogin.os})` : ""}
-                                                    </span>
-                                                </div>
-
-                                                <div className="flex items-center justify-between text-sm">
-                                                    <span className="text-slate-400">Browser:</span>
-                                                    <span className="text-slate-300">
-                                                        {selectedUser.lastLogin.browser || "Unknown"}
-                                                    </span>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <div className="text-center text-slate-500 text-sm py-2">
-                                                No login activity found
-                                            </div>
-                                        )}
+                                    <div className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase">
+                                        <FaClock size={12} />
+                                        <span>Last Login Details</span>
                                     </div>
+
+                                    {selectedUser?.lastLogin?.date ? (
+                                        <>
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-slate-400">Date & Time:</span>
+                                                <span className="text-white font-medium">
+                                                    {new Date(selectedUser.lastLogin.date).toLocaleString()}
+                                                </span>
+                                            </div>
+
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-slate-400">IP Address:</span>
+                                                <span className="text-slate-300">
+                                                    {selectedUser.lastLogin.ip || "N/A"}
+                                                </span>
+                                            </div>
+
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-slate-400">Device:</span>
+                                                <span className="text-slate-300">
+                                                    {selectedUser.lastLogin.device || "Unknown"}
+                                                    {selectedUser.lastLogin.os ? ` (${selectedUser.lastLogin.os})` : ""}
+                                                </span>
+                                            </div>
+
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-slate-400">Browser:</span>
+                                                <span className="text-slate-300">
+                                                    {selectedUser.lastLogin.browser || "Unknown"}
+                                                </span>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="text-center text-slate-500 text-sm py-2">
+                                            No login activity found
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
