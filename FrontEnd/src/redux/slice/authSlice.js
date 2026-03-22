@@ -246,6 +246,8 @@ const authSlice = createSlice({
                 state.isAuthChecked = true;
             })
 
+            
+
 
             /* ===== LOGOUT ===== */
             .addCase(logoutUser.pending, (state) => {
@@ -289,11 +291,11 @@ const authSlice = createSlice({
             .addCase(blockUser.fulfilled, (state, action) => {
                 state.loading = false;
 
-                // agar logged-in user ko block kiya hai toh update karo
-                if (state.user && state.user._id === action.payload._id) {
+                if (state.user?._id === action.payload._id) {
                     state.user = action.payload;
                 }
             })
+
 
             .addCase(blockUser.rejected, (state, action) => {
                 state.loading = false;
@@ -310,7 +312,7 @@ const authSlice = createSlice({
             .addCase(unblockUser.fulfilled, (state, action) => {
                 state.loading = false;
 
-                if (state.user && state.user._id === action.payload._id) {
+                if (state.user?._id === action.payload._id) {
                     state.user = action.payload;
                 }
             })

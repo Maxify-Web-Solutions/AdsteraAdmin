@@ -177,7 +177,7 @@ const getallusers = async (req, res) => {
 }
 
 // UPDATE USER INFO
-exports.updateUser = async (req, res) => {
+const updateUser = async (req, res) => {
   try {
     const { userId } = req.params;
 
@@ -218,15 +218,22 @@ exports.updateUser = async (req, res) => {
 
 
 // BLOCK USER
-exports.blockUser = async (req, res) => {
+const blockUser = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { status: "blocked" },
-      { new: true }
-    );
+    console.log("PARAM ID:", userId);
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid User ID",
+      });
+    }
+
+    const user = await User.findById(userId);
+
+    console.log("BEFORE UPDATE:", user);
 
     if (!user) {
       return res.status(404).json({
@@ -235,12 +242,18 @@ exports.blockUser = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
+    user.status = "blocked";
+    await user.save();
+
+    console.log("AFTER UPDATE:", user);
+
+    return res.json({
       success: true,
-      message: "User blocked successfully",
+      message: "User blocked",
       user,
     });
   } catch (error) {
+    console.log("ERROR:", error);
     return res.status(500).json({
       success: false,
       message: error.message,
@@ -249,14 +262,21 @@ exports.blockUser = async (req, res) => {
 };
 
 // UNBLOCK USER
-exports.unblockUser = async (req, res) => {
+const unblockUser = async (req, res) => {
   try {
     const { userId } = req.params;
 
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
     const user = await User.findByIdAndUpdate(
       userId,
-      { status: "active" },
-      { new: true }
+      { $set: { status: "active" } },
+      { new: true, runValidators: true }
     );
 
     if (!user) {
@@ -266,13 +286,13 @@ exports.unblockUser = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "User unblocked successfully",
       user,
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -289,5 +309,5 @@ module.exports = {
   blockUser,
   unblockUser,
   updateUser
-  
+
 };
