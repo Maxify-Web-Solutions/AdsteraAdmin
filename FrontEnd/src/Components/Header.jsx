@@ -61,7 +61,7 @@ const Header = () => {
 
                     {/* Dropdown */}
                     {open && (
-                        <div className="absolute right-0 mt-3 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-lg">
+                        <div className="absolute right-0 mt-3 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-50">
 
                             <button
                                 onClick={() => navigate("/profile")}
