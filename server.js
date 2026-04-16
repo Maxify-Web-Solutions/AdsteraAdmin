@@ -12,6 +12,9 @@ const adsterraPlacementRoutes = require("./routes/adsterraPlacementRoutes");
 const connectDB = require("./config/connectdb");
 
 const app = express();
+const path = require("path");
+
+
 
 app.use(cors({
   origin: [
@@ -30,6 +33,12 @@ app.use("/api/auth", authRoutes);
 app.use("/api/smartlink", smartLinkRoutes);
 app.use("/api/adsterra", adsterraRoutes);
 app.use("/api", adsterraPlacementRoutes);
+
+app.use(express.static(path.join(__dirname, "./FrontEnd/dist")));
+
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, "./FrontEnd/dist/index.html"));
+});
 
 
 
