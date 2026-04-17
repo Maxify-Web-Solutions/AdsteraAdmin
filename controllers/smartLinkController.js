@@ -344,13 +344,10 @@ exports.getRejectedSmartLinks = async (req, res) => {
 
 exports.getAllSmartLinks = async (req, res) => {
     try {
+
+        console.log(req.user);
+
         // ✅ Role check (optional but recommended)
-        if (req.user.role !== "admin") {
-            return res.status(403).json({
-                success: false,
-                message: "Access denied. Admin only.",
-            });
-        }
 
         // ✅ Query params (pagination + search)
         const {

@@ -21,7 +21,7 @@ export const getUserSmartLinks = createAsyncThunk(
     "smartLink/getUser",
     async (_, { rejectWithValue }) => {
         try {
-            const res = await api.get("/smartlink/my-links");
+            const res = await api.get("/smartlink/admin/smart-links");
             return res.data.data;
         } catch (err) {
             return rejectWithValue(err.response?.data || err.message);

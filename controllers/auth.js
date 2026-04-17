@@ -55,18 +55,18 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
-      return res.status(404).json({
-        message: "User not found"
+      return res.status(401).json({
+        message: "Invalid credentials"
       });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: "Invalid credentials"
       });
     }
@@ -84,22 +84,29 @@ const login = async (req, res) => {
     const os = parser.getOS();
     const browser = parser.getBrowser();
 
+    // ✅ IP FIX
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0] ||
+      req.socket.remoteAddress;
+
     // ✅ UPDATE LAST LOGIN
     user.lastLogin = {
       date: new Date(),
-      ip: req.ip || req.headers["x-forwarded-for"],
+      ip,
       device: device.model || "Desktop",
-      os: os.name + " " + os.version,
-      browser: browser.name + " " + browser.version
+      os: os.name ? `${os.name} ${os.version || ""}` : "Unknown",
+      browser: browser.name
+        ? `${browser.name} ${browser.version || ""}`
+        : "Unknown"
     };
 
     await user.save();
 
-    const token = generateToken(user._id);
+    const token = generateToken(user._id, user.role, user.email);
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
@@ -122,6 +129,8 @@ const login = async (req, res) => {
 
 const getProfile = async (req, res) => {
   try {
+
+
     const user = await User.findById(req.user.id).select("-password");
 
     if (!user) {

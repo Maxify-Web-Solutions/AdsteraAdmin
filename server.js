@@ -13,6 +13,8 @@ const connectDB = require("./config/connectdb");
 
 const app = express();
 const path = require("path");
+const dns = require("dns");
+dns.setServers(["1.1.1.1","8.8.8.8"])
 
 
 
