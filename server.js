@@ -33,6 +33,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/smartlink", smartLinkRoutes);
 app.use("/api/adsterra", adsterraRoutes);
 app.use("/api", adsterraPlacementRoutes);
+app.use("/api", require("./routes/configRoutes"));
+
+
 
 app.use(express.static(path.join(__dirname, "./FrontEnd/dist")));
 
