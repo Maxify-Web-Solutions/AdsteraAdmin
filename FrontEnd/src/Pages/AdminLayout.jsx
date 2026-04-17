@@ -85,6 +85,7 @@ const AdminLayout = () => {
                         <Link to="/dashboard/rejected_Smartlinks" onClick={() => setOpen(false)} className={linkClass("/dashboard/rejected_Smartlinks")}>
                             Rejected Smartlinks
                         </Link>
+                        <Link to="/dashboard/key " onClick={() => setOpen(false)} className={linkClass("/dashboard/key")}>Update-Key</Link>
 
                         <Link to="/dashboard/profile" onClick={() => setOpen(false)} className={linkClass("/dashboard/profile")}>
                             Profile
