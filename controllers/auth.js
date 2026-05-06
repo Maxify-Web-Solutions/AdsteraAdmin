@@ -2,6 +2,8 @@ const User = require("../models/authmodel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UAParser = require("ua-parser-js");
+const mongoose = require("mongoose");
+
 
 
 const generateToken = (id) => {
@@ -231,7 +233,6 @@ const blockUser = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    console.log("PARAM ID:", userId);
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({
