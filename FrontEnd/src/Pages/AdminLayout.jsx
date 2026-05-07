@@ -87,7 +87,13 @@ const AdminLayout = () => {
                         </Link>
                         <Link to="/dashboard/key " onClick={() => setOpen(false)} className={linkClass("/dashboard/key")}>Update-Key</Link>
 
-                        <Link to="/dashboard/payouts " onClick={() => setOpen(false)} className={linkClass("/dashboard/payouts")}>Payouts</Link>
+                        <Link to="/dashboard/payouts " onClick={() => setOpen(false)} className={linkClass("/dashboard/payouts")}>All Payouts</Link>
+
+                        <Link to="/dashboard/approved_Payouts " onClick={() => setOpen(false)} className={linkClass("/dashboard/approved_Payouts")}>Approved Payouts</Link>
+
+                        <Link to="/dashboard/pending_Payouts " onClick={() => setOpen(false)} className={linkClass("/dashboard/pending_Payouts")}>Pending Payouts</Link>
+
+                        <Link to="/dashboard/rejected_Payouts" onClick={() => setOpen(false)} className={linkClass("/dashboard/rejected_Payouts")}>Rejected Payouts</Link>
 
                         <Link to="/dashboard/profile" onClick={() => setOpen(false)} className={linkClass("/dashboard/profile")}>
                             Profile

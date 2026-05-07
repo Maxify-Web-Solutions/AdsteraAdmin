@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import PayoutDetailsModal from "../components/PayoutDetailsModal";
+
 import {
     getAllWithdrawals,
     updateWithdrawalStatus,
 } from "../redux/slice/withdrawalSlice";
 
 import {
-    FaSearch,
     FaUser,
     FaMoneyBillWave,
     FaCheck,
     FaTimes,
     FaRegCalendarAlt,
+    FaUniversity,
+    FaWallet,
     FaEye,
 } from "react-icons/fa";
 
 import Swal from "sweetalert2";
+import PayoutDetailsModal from "../components/PayoutDetailsModal";
 
-const ManagePayouts = () => {
-    const dispatch = useDispatch();
+const PendingPayouts = () => {
 
     const [selectedPayout, setSelectedPayout] = useState(null);
 
@@ -30,28 +31,27 @@ const ManagePayouts = () => {
         setIsModalOpen(true);
     };
 
+    const dispatch = useDispatch();
+
     const {
-        allWithdrawals,
+        allWithdrawals = [],
         loading,
     } = useSelector((state) => state.withdrawal);
 
-    const [searchTerm, setSearchTerm] = useState("");
 
+    // ================= FETCH =================
     useEffect(() => {
         dispatch(getAllWithdrawals());
     }, [dispatch]);
 
-    const withdrawals = allWithdrawals || [];
 
-    const filteredWithdrawals = withdrawals.filter((item) =>
-        item.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.userId?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.status?.toLowerCase().includes(searchTerm.toLowerCase())
+    // ================= FILTER PENDING =================
+    const pendingWithdrawals = allWithdrawals.filter(
+        (item) => item.status === "pending"
     );
 
-    // ==============================
-    // ✅ UPDATE STATUS
-    // ==============================
+
+    // ================= UPDATE STATUS =================
     const handleUpdateStatus = async (withdrawalId, status) => {
 
         const { value: remark } = await Swal.fire({
@@ -83,38 +83,19 @@ const ManagePayouts = () => {
         }
     };
 
+
     return (
         <div className="space-y-6">
 
             {/* ================= HEADER ================= */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h1 className="text-3xl font-bold text-white tracking-tight">
+                    Pending Payouts
+                </h1>
 
-                <div>
-                    <h1 className="text-3xl font-bold text-white tracking-tight">
-                        Manage Payouts
-                    </h1>
-
-                    <p className="text-slate-400 mt-1">
-                        Manage all withdrawal and payout requests.
-                    </p>
-                </div>
-
-                {/* SEARCH */}
-                <div className="relative w-full md:w-72">
-
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FaSearch className="text-slate-500" />
-                    </div>
-
-                    <input
-                        type="text"
-                        placeholder="Search payouts..."
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-500"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-
-                </div>
+                <p className="text-slate-400 mt-1">
+                    Review and manage pending payout requests.
+                </p>
             </div>
 
 
@@ -139,10 +120,6 @@ const ManagePayouts = () => {
                                 </th>
 
                                 <th className="px-6 py-4 font-semibold text-center">
-                                    Status
-                                </th>
-
-                                <th className="px-6 py-4 font-semibold text-center">
                                     Created
                                 </th>
 
@@ -162,7 +139,7 @@ const ManagePayouts = () => {
 
                                 <tr>
                                     <td
-                                        colSpan="6"
+                                        colSpan="5"
                                         className="px-6 py-16 text-center text-slate-400"
                                     >
 
@@ -173,21 +150,21 @@ const ManagePayouts = () => {
                                     </td>
                                 </tr>
 
-                            ) : filteredWithdrawals.length > 0 ? (
+                            ) : pendingWithdrawals.length > 0 ? (
 
-                                filteredWithdrawals.map((item) => (
+                                pendingWithdrawals.map((item) => (
 
                                     <tr
                                         key={item._id}
-                                        className="group hover:bg-slate-700/30 transition duration-200"
+                                        className="group hover:bg-slate-700/40 transition duration-200"
                                     >
 
                                         {/* ================= USER ================= */}
-                                        <td className="px-6 py-5">
+                                        <td className="px-6 py-4">
 
                                             <div className="flex items-center gap-3">
 
-                                                <div className="w-11 h-11 rounded-xl bg-slate-700 flex items-center justify-center text-emerald-400 font-bold border border-slate-600 shadow-lg">
+                                                <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-emerald-400 font-bold border border-slate-600">
                                                     {item.userId?.name?.charAt(0).toUpperCase() || (
                                                         <FaUser size={14} />
                                                     )}
@@ -195,11 +172,11 @@ const ManagePayouts = () => {
 
                                                 <div className="flex flex-col">
 
-                                                    <span className="text-white font-semibold text-sm">
+                                                    <span className="text-white font-medium text-sm">
                                                         {item.userId?.name || "Unknown"}
                                                     </span>
 
-                                                    <span className="text-xs text-slate-400">
+                                                    <span className="text-xs text-slate-500">
                                                         {item.userId?.email}
                                                     </span>
 
@@ -216,9 +193,9 @@ const ManagePayouts = () => {
 
 
                                         {/* ================= AMOUNT ================= */}
-                                        <td className="px-6 py-5">
+                                        <td className="px-6 py-4">
 
-                                            <div className="flex items-center gap-2 text-emerald-400 font-bold text-lg">
+                                            <div className="flex items-center gap-2 text-emerald-400 font-semibold text-lg">
 
                                                 <FaMoneyBillWave />
 
@@ -227,32 +204,12 @@ const ManagePayouts = () => {
                                             </div>
 
                                         </td>
-                                        {/* ================= STATUS ================= */}
-                                        <td className="px-6 py-5 text-center">
-
-                                            <span
-                                                className={`px-4 py-1.5 rounded-xl text-xs font-semibold capitalize border shadow-lg
-
-                                    ${item.status === "approved"
-                                                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                                                        : item.status === "rejected"
-                                                            ? "bg-red-500/10 text-red-400 border-red-500/20"
-                                                            : "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
-                                                    }`}
-                                            >
-                                                {item.status}
-                                            </span>
-
-                                        </td>
-
-
-
                                         {/* ================= CREATED DATE ================= */}
-                                        <td className="px-6 py-5 text-center">
+                                        <td className="px-6 py-4 text-center">
 
                                             <div className="flex flex-col items-center">
 
-                                                <span className="text-slate-200 text-sm font-medium whitespace-nowrap">
+                                                <span className="text-slate-300 text-sm font-medium whitespace-nowrap">
                                                     {new Date(item.createdAt).toLocaleDateString(
                                                         undefined,
                                                         {
@@ -284,50 +241,39 @@ const ManagePayouts = () => {
 
 
                                         {/* ================= ACTIONS ================= */}
-                                        <td className="px-6 py-5">
+                                        <td className="px-6 py-4">
 
-                                            {item.status === "pending" ? (
+                                            <div className="flex items-center justify-center gap-2">
 
-                                                <div className="flex items-center justify-center gap-2">
+                                                {/* VIEW */}
+                                                <button
+                                                    onClick={() => handleOpenModal(item)}
+                                                    className="px-3 py-2 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/20 transition shadow-lg"
+                                                >
+                                                    <FaEye />
+                                                </button>
 
-                                                    {/* VIEW DETAILS */}
-                                                    <button
-                                                        onClick={() => handleOpenModal(item)}
-                                                        className="px-3 py-2 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/20 transition shadow-lg"
-                                                    >
-                                                        <FaEye />
-                                                    </button>
+                                                {/* APPROVE */}
+                                                <button
+                                                    onClick={() =>
+                                                        handleUpdateStatus(item._id, "approved")
+                                                    }
+                                                    className="px-3 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 transition shadow-lg"
+                                                >
+                                                    <FaCheck />
+                                                </button>
 
-                                                    {/* APPROVE */}
-                                                    <button
-                                                        onClick={() =>
-                                                            handleUpdateStatus(item._id, "approved")
-                                                        }
-                                                        className="px-3 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 transition shadow-lg"
-                                                    >
-                                                        <FaCheck />
-                                                    </button>
+                                                {/* REJECT */}
+                                                <button
+                                                    onClick={() =>
+                                                        handleUpdateStatus(item._id, "rejected")
+                                                    }
+                                                    className="px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition shadow-lg"
+                                                >
+                                                    <FaTimes />
+                                                </button>
 
-
-                                                    {/* REJECT */}
-                                                    <button
-                                                        onClick={() =>
-                                                            handleUpdateStatus(item._id, "rejected")
-                                                        }
-                                                        className="px-3 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition shadow-lg"
-                                                    >
-                                                        <FaTimes />
-                                                    </button>
-
-                                                </div>
-
-                                            ) : (
-
-                                                <div className="text-center text-xs text-slate-500 capitalize">
-                                                    Already {item.status}
-                                                </div>
-
-                                            )}
+                                            </div>
 
                                         </td>
 
@@ -339,18 +285,18 @@ const ManagePayouts = () => {
                                 <tr>
 
                                     <td
-                                        colSpan="6"
+                                        colSpan="5"
                                         className="px-6 py-16 text-center text-slate-400"
                                     >
 
                                         <div className="flex flex-col items-center justify-center gap-3">
 
                                             <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-slate-600">
-                                                <FaSearch size={24} />
+                                                <FaMoneyBillWave size={24} />
                                             </div>
 
                                             <p className="text-lg font-medium text-slate-300">
-                                                No payouts found
+                                                No pending payouts
                                             </p>
 
                                         </div>
@@ -362,7 +308,9 @@ const ManagePayouts = () => {
                             )}
 
                         </tbody>
+
                     </table>
+
                 </div>
 
 
@@ -371,8 +319,7 @@ const ManagePayouts = () => {
                 <div className="px-6 py-4 border-t border-slate-700 bg-slate-800/50 flex items-center justify-between text-xs text-slate-400">
 
                     <span>
-                        Showing {filteredWithdrawals.length} of{" "}
-                        {withdrawals.length} payouts
+                        Showing {pendingWithdrawals.length} pending payouts
                     </span>
 
                 </div>
@@ -384,9 +331,8 @@ const ManagePayouts = () => {
     onClose={() => setIsModalOpen(false)}
     payout={selectedPayout}
 />
-
         </div>
     );
 };
 
-export default ManagePayouts;
+export default PendingPayouts;

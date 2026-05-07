@@ -16,9 +16,9 @@ const adminMiddleware = require("../middleware/adminMiddleware");
 
 // 👤 USER ROUTES
 
-router.get("/:id", authMiddleware,adminMiddleware, getMyWithdrawals);
+router.get("/all", authMiddleware, getAllWithdrawals);
+router.get("/:id", authMiddleware, getMyWithdrawals);
 // 👑 ADMIN ROUTES
-router.get("/all", authMiddleware, adminMiddleware, getAllWithdrawals);
-router.put("/update", authMiddleware, adminMiddleware, updateWithdrawalStatus);
+router.put("/update", authMiddleware, updateWithdrawalStatus);
 
 module.exports = router;
