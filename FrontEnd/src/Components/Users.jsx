@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsers} from "../redux/slice/adminSlice";
+import { getUsers } from "../redux/slice/adminSlice";
 import { unblockUser, updateUser, blockUser, deleteUser } from "../redux/slice/authSlice";
 import { FaSearch, FaEdit, FaBan, FaUser, FaChevronLeft, FaChevronRight, FaEnvelope, FaPhone, FaCalendarAlt, FaShieldAlt, FaIdBadge, FaTimes, FaClock, FaTrash, FaSave, FaUnlock } from "react-icons/fa";
 
@@ -72,17 +72,17 @@ const Users = () => {
     };
     const handleDelete = async (id) => {
 
-    if (
-        window.confirm(
-            "Are you sure you want to delete this user?"
-        )
-    ) {
+        if (
+            window.confirm(
+                "Are you sure you want to delete this user?"
+            )
+        ) {
 
-        await dispatch(deleteUser(id));
+            await dispatch(deleteUser(id));
 
-        dispatch(getUsers());
-    }
-};
+            dispatch(getUsers());
+        }
+    };
 
     // Stats
     const stats = {
@@ -219,34 +219,34 @@ const Users = () => {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
-                                                <button 
+                                                <button
                                                     onClick={() => handleEditClick(user)}
-                                                    title="Edit User" 
+                                                    title="Edit User"
                                                     className="p-2 text-blue-400 hover:text-white rounded-lg bg-blue-500/10 hover:bg-blue-500/20 transition border border-blue-500/20">
                                                     <FaEdit size={14} />
                                                 </button>
                                                 {user.status === 'blocked' ? (
-                                                    <button 
+                                                    <button
                                                         onClick={() => handleUnblock(user._id)}
-                                                        title="Unblock User" 
+                                                        title="Unblock User"
                                                         className="p-2 text-emerald-400 hover:text-white rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 transition border border-emerald-500/20">
                                                         <FaUnlock size={14} />
                                                     </button>
                                                 ) : (
-                                                    <button 
+                                                    <button
                                                         onClick={() => handleBlock(user._id)}
-                                                        title="Block User" 
+                                                        title="Block User"
                                                         className="p-2 text-red-400 hover:text-white rounded-lg bg-red-500/10 hover:bg-red-500/20 transition border border-red-500/20">
                                                         <FaBan size={14} />
                                                     </button>
                                                 )}
-                                                <button 
-    onClick={() => handleDelete(user._id)}
-    title="Delete User" 
-    className="p-2 text-rose-400 hover:text-white rounded-lg bg-rose-500/10 hover:bg-rose-500/20 transition border border-rose-500/20"
->
-    <FaTrash size={14} />
-</button>
+                                                <button
+                                                    onClick={() => handleDelete(user._id)}
+                                                    title="Delete User"
+                                                    className="p-2 text-rose-400 hover:text-white rounded-lg bg-rose-500/10 hover:bg-rose-500/20 transition border border-rose-500/20"
+                                                >
+                                                    <FaTrash size={14} />
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -407,44 +407,44 @@ const Users = () => {
                                     <FaTimes size={20} />
                                 </button>
                             </div>
-                            
+
                             <form onSubmit={handleUpdate} className="space-y-4">
                                 <div>
                                     <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Name</label>
-                                    <input 
-                                        type="text" 
-                                        value={editData.name || ''} 
-                                        onChange={(e) => setEditData({...editData, name: e.target.value})}
+                                    <input
+                                        type="text"
+                                        value={editData.name || ''}
+                                        onChange={(e) => setEditData({ ...editData, name: e.target.value })}
                                         className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Email</label>
-                                    <input 
-                                        type="email" 
-                                        value={editData.email || ''} 
-                                        onChange={(e) => setEditData({...editData, email: e.target.value})}
+                                    <input
+                                        type="email"
+                                        value={editData.email || ''}
+                                        onChange={(e) => setEditData({ ...editData, email: e.target.value })}
                                         className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-slate-400 uppercase mb-1">Mobile</label>
-                                    <input 
-                                        type="text" 
-                                        value={editData.mobile || ''} 
-                                        onChange={(e) => setEditData({...editData, mobile: e.target.value})}
+                                    <input
+                                        type="text"
+                                        value={editData.mobile || ''}
+                                        onChange={(e) => setEditData({ ...editData, mobile: e.target.value })}
                                         className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500"
                                     />
                                 </div>
                                 <div className="pt-4 flex gap-3">
-                                    <button 
+                                    <button
                                         type="button"
                                         onClick={() => setIsEditOpen(false)}
                                         className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition font-medium"
                                     >
                                         Cancel
                                     </button>
-                                    <button 
+                                    <button
                                         type="submit"
                                         className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition font-medium flex items-center justify-center gap-2"
                                     >
