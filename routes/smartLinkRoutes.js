@@ -39,6 +39,8 @@ router.get("/admin/smart-links", authMiddleware, smartLinkController.getAllSmart
 
 router.put("/admin/smartlink/reject/:id",  smartLinkController.rejectSmartLink);
 
+router.delete("/delete-smartlink/:id", authMiddleware, smartLinkController.deleteSmartLink);
+
 
 
 

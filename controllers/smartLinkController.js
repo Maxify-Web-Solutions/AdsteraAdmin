@@ -398,41 +398,68 @@ exports.getAllSmartLinks = async (req, res) => {
 
 
 exports.rejectSmartLink = async (req, res) => {
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    const smartLink = await SmartLink.findById(id);
+        const smartLink = await SmartLink.findById(id);
 
-    if (!smartLink) {
-      return res.status(404).json({
-        success: false,
-        message: "SmartLink not found",
-      });
+        if (!smartLink) {
+            return res.status(404).json({
+                success: false,
+                message: "SmartLink not found",
+            });
+        }
+
+        // Already rejected check
+        if (smartLink.status === "rejected") {
+            return res.status(400).json({
+                success: false,
+                message: "SmartLink already rejected",
+            });
+        }
+
+        // Update status
+        smartLink.status = "rejected";
+        await smartLink.save();
+
+        res.status(200).json({
+            success: true,
+            message: "SmartLink rejected successfully",
+            data: smartLink,
+        });
+
+    } catch (error) {
+        console.error("Reject SmartLink Error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Server Error",
+        });
     }
+};
 
-    // Already rejected check
-    if (smartLink.status === "rejected") {
-      return res.status(400).json({
-        success: false,
-        message: "SmartLink already rejected",
-      });
+exports.deleteSmartLink = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const smartLink = await SmartLink.findByIdAndDelete(id);
+
+        if (!smartLink) {
+            return res.status(404).json({
+                success: false,
+                message: "SmartLink not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "SmartLink deleted successfully",
+            smartLink,
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
     }
-
-    // Update status
-    smartLink.status = "rejected";
-    await smartLink.save();
-
-    res.status(200).json({
-      success: true,
-      message: "SmartLink rejected successfully",
-      data: smartLink,
-    });
-
-  } catch (error) {
-    console.error("Reject SmartLink Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-    });
-  }
 };
