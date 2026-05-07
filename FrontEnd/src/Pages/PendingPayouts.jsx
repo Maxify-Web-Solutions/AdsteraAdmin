@@ -18,7 +18,7 @@ import {
 } from "react-icons/fa";
 
 import Swal from "sweetalert2";
-import PayoutDetailsModal from "../components/PayoutDetailsModal";
+import PayoutDetailsModal from "../Components/PayoutDetailsModal";
 
 const PendingPayouts = () => {
 

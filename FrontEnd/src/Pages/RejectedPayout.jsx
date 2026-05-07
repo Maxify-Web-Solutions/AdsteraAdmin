@@ -15,7 +15,7 @@ import {
     FaEye,
     FaCheckCircle,
 } from "react-icons/fa";
-import PayoutDetailsModal from "../components/PayoutDetailsModal";
+import PayoutDetailsModal from "../Components/PayoutDetailsModal";
 
 const RejectedPayouts = () => {
 
