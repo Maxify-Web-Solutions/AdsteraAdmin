@@ -15,6 +15,12 @@ const smartLinkSchema = new mongoose.Schema({
 
   name: String,
 
+  type: {
+    type: String,
+    enum: ["adult", "maisteram"],
+    required: true
+  },
+
   targetUrl: String,
 
   smartCode: {
@@ -22,11 +28,11 @@ const smartLinkSchema = new mongoose.Schema({
     unique: true
   },
 
-  key: {                 // ✅ ADD THIS
+  key: {
     type: String
   },
 
-  redirectUrl: {         // ✅ ADD THIS
+  redirectUrl: {
     type: String
   },
 
@@ -41,6 +47,12 @@ const smartLinkSchema = new mongoose.Schema({
     type: String,
     enum: ["pending", "approved", "rejected"],
     default: "pending"
+  },
+
+  // ✅ approve time
+  approvedAt: {
+    type: Date,
+    default: null
   }
 
 }, { timestamps: true });

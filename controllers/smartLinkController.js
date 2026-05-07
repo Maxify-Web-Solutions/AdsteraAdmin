@@ -74,6 +74,7 @@ exports.approveSmartLink = async (req, res) => {
 
         const updateData = {
             status: "approved",
+            approvedAt: Date.now(), // ✅ current date & time
         };
 
         if (redirectUrl) {
@@ -100,11 +101,12 @@ exports.approveSmartLink = async (req, res) => {
         });
 
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
     }
 };
-
-
 
 // ================= EXTERNAL UPDATE =================
 exports.updateSmartLinkData = async (req, res) => {
@@ -137,8 +139,6 @@ exports.updateSmartLinkData = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
-
-
 
 // ================= TRACK IMPRESSION =================
 exports.trackImpression = async (req, res) => {
