@@ -19,6 +19,7 @@ import PendingLinks from "./Pages/PendingLinks";
 import RejectedLinks from "./Pages/RejectedLinks";
 import Profile from "./Pages/Profile";
 import AdminAdsterra from "./Pages/AdminAdsterra";
+import ManagePayouts from "./Pages/ManagePayouts";
 
 function App() {
 
@@ -47,6 +48,7 @@ function App() {
           <Route path="approved_Smartlinks" element={<ApprovedLinks />} />
           <Route path="pending_Smartlinks" element={<PendingLinks />} />
           <Route path="rejected_Smartlinks" element={<RejectedLinks />} />
+          <Route path="payouts" element={<ManagePayouts />} />
           <Route path="profile" element={<Profile />} />
           <Route path ="key"    element={<AdminAdsterra />} />  
         </Route>
