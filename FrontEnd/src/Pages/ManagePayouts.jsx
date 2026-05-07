@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import PayoutDetailsModal from "../components/PayoutDetailsModal";
+import PayoutDetailsModal from "../Components/PayoutDetailsModal";
 import {
     getAllWithdrawals,
     updateWithdrawalStatus,

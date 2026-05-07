@@ -5,7 +5,7 @@ import {
     getAllWithdrawals,
 } from "../redux/slice/withdrawalSlice";
 
-import PayoutDetailsModal from "../components/PayoutDetailsModal";
+import PayoutDetailsModal from "../Components/PayoutDetailsModal";
 
 import {
     FaUser,
