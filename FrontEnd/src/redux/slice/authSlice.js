@@ -1,32 +1,47 @@
+// redux/slice/authSlice.js
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "./axiosConfig";
+
 
 /* =========================
    REGISTER USER
 ========================= */
 export const registerUser = createAsyncThunk(
     "auth/register",
-    async ({ name, email, mobile, password }, { rejectWithValue }) => {
+    async (
+        {
+            name,
+            email,
+            mobile,
+            password,
+        },
+        { rejectWithValue }
+    ) => {
         try {
 
-            const response = await api.post("/auth/register", {
-                name,
-                email,
-                mobile,
-                password
-            });
+            const response = await api.post(
+                "/auth/register",
+                {
+                    name,
+                    email,
+                    mobile,
+                    password,
+                }
+            );
 
-            return response.data.user;
+            return response.data;
 
         } catch (error) {
 
             return rejectWithValue(
-                error.response?.data?.message || "Registration failed"
+                error.response?.data ||
+                { message: "Registration failed" }
             );
-
         }
     }
 );
+
 
 
 /* =========================
@@ -34,49 +49,61 @@ export const registerUser = createAsyncThunk(
 ========================= */
 export const loginUser = createAsyncThunk(
     "auth/login",
-    async ({ email, password }, { rejectWithValue }) => {
+    async (
+        {
+            email,
+            password,
+        },
+        { rejectWithValue }
+    ) => {
         try {
 
-            const response = await api.post("/auth/login", {
-                email,
-                password
-            });
+            const response = await api.post(
+                "/auth/login",
+                {
+                    email,
+                    password,
+                }
+            );
 
-            return response.data.user;
+            return response.data;
 
         } catch (error) {
 
             return rejectWithValue(
-                error.response?.data?.message || "Login failed"
+                error.response?.data ||
+                { message: "Login failed" }
             );
-
         }
     }
 );
 
 
+
 /* =========================
-   GET LOGGED-IN USER
+   GET PROFILE
 ========================= */
 export const getProfile = createAsyncThunk(
     "auth/getProfile",
     async (_, { rejectWithValue }) => {
         try {
 
-            const res = await api.get("/auth/profile");
+            const res = await api.get(
+                "/auth/profile"
+            );
 
-
-            return res.data.user;
+            return res.data;
 
         } catch (error) {
 
             return rejectWithValue(
-                error.response?.data?.message || "User fetch failed"
+                error.response?.data ||
+                { message: "Profile fetch failed" }
             );
-
         }
     }
 );
+
 
 
 /* =========================
@@ -87,19 +114,48 @@ export const logoutUser = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
 
-            await api.post("/auth/logout");
+            const res = await api.post(
+                "/auth/logout"
+            );
 
-            return true;
+            return res.data;
 
         } catch (error) {
 
             return rejectWithValue(
-                error.response?.data?.message || "Logout failed"
+                error.response?.data ||
+                { message: "Logout failed" }
             );
-
         }
     }
 );
+
+
+
+/* =========================
+   GET ALL USERS
+========================= */
+export const getAllUsers = createAsyncThunk(
+    "auth/getAllUsers",
+    async (_, { rejectWithValue }) => {
+        try {
+
+            const res = await api.get(
+                "/auth/all-users"
+            );
+
+            return res.data.users;
+
+        } catch (error) {
+
+            return rejectWithValue(
+                error.response?.data ||
+                { message: "Users fetch failed" }
+            );
+        }
+    }
+);
+
 
 
 /* =========================
@@ -107,22 +163,38 @@ export const logoutUser = createAsyncThunk(
 ========================= */
 export const updateUser = createAsyncThunk(
     "auth/updateUser",
-    async ({ userId, name, email, mobile }, { rejectWithValue }) => {
+    async (
+        {
+            userId,
+            name,
+            email,
+            mobile,
+        },
+        { rejectWithValue }
+    ) => {
         try {
-            const res = await api.put(`/auth/update/${userId}`, {
-                name,
-                email,
-                mobile,
-            });
 
-            return res.data.user;
+            const res = await api.put(
+                `/auth/update/${userId}`,
+                {
+                    name,
+                    email,
+                    mobile,
+                }
+            );
+
+            return res.data;
+
         } catch (error) {
+
             return rejectWithValue(
-                error.response?.data?.message || "Update failed"
+                error.response?.data ||
+                { message: "Update failed" }
             );
         }
     }
 );
+
 
 
 /* =========================
@@ -132,15 +204,23 @@ export const blockUser = createAsyncThunk(
     "auth/blockUser",
     async (userId, { rejectWithValue }) => {
         try {
-            const res = await api.put(`/auth/block/${userId}`);
-            return res.data.user;
+
+            const res = await api.put(
+                `/auth/block/${userId}`
+            );
+
+            return res.data;
+
         } catch (error) {
+
             return rejectWithValue(
-                error.response?.data?.message || "Block failed"
+                error.response?.data ||
+                { message: "Block failed" }
             );
         }
     }
 );
+
 
 
 /* =========================
@@ -150,26 +230,72 @@ export const unblockUser = createAsyncThunk(
     "auth/unblockUser",
     async (userId, { rejectWithValue }) => {
         try {
-            const res = await api.put(`/auth/unblock/${userId}`);
-            return res.data.user;
+
+            const res = await api.put(
+                `/auth/unblock/${userId}`
+            );
+
+            return res.data;
+
         } catch (error) {
+
             return rejectWithValue(
-                error.response?.data?.message || "Unblock failed"
+                error.response?.data ||
+                { message: "Unblock failed" }
             );
         }
     }
 );
 
 
+
+/* =========================
+   DELETE USER
+========================= */
+export const deleteUser = createAsyncThunk(
+    "auth/deleteUser",
+    async (id, { rejectWithValue }) => {
+        try {
+
+            const res = await api.delete(
+                `/auth/delete/${id}`
+            );
+
+            return {
+                id,
+                ...res.data,
+            };
+
+        } catch (error) {
+
+            return rejectWithValue(
+                error.response?.data ||
+                { message: "Delete failed" }
+            );
+        }
+    }
+);
+
+
+
 /* =========================
    INITIAL STATE
 ========================= */
 const initialState = {
+
     loading: false,
+
     user: null,
+
+    users: [],
+
     error: null,
-    isAuthChecked: false
+
+    success: null,
+
+    isAuthChecked: false,
 };
+
 
 
 /* =========================
@@ -185,147 +311,326 @@ const authSlice = createSlice({
 
         clearError: (state) => {
             state.error = null;
-        }
+        },
+
+        clearSuccess: (state) => {
+            state.success = null;
+        },
 
     },
+
+
 
     extraReducers: (builder) => {
 
         builder
 
-            /* ===== REGISTER ===== */
+
+
+            /* ================= REGISTER ================= */
             .addCase(registerUser.pending, (state) => {
+
                 state.loading = true;
+
                 state.error = null;
             })
 
             .addCase(registerUser.fulfilled, (state, action) => {
+
                 state.loading = false;
-                state.user = action.payload;
+
+                state.user = action.payload.user;
+
+                state.success =
+                    action.payload.message ||
+                    "Registration successful";
+
                 state.isAuthChecked = true;
             })
 
             .addCase(registerUser.rejected, (state, action) => {
+
                 state.loading = false;
-                state.error = action.payload;
+
+                state.error =
+                    action.payload?.message;
             })
 
 
-            /* ===== LOGIN ===== */
+
+            /* ================= LOGIN ================= */
             .addCase(loginUser.pending, (state) => {
+
                 state.loading = true;
+
                 state.error = null;
             })
 
             .addCase(loginUser.fulfilled, (state, action) => {
+
                 state.loading = false;
-                state.user = action.payload;
+
+                state.user = action.payload.user;
+
+                state.success =
+                    action.payload.message ||
+                    "Login successful";
+
                 state.isAuthChecked = true;
             })
 
             .addCase(loginUser.rejected, (state, action) => {
+
                 state.loading = false;
-                state.error = action.payload;
+
+                state.error =
+                    action.payload?.message;
             })
 
 
-            /* ===== GET PROFILE ===== */
+
+            /* ================= PROFILE ================= */
             .addCase(getProfile.pending, (state) => {
+
                 state.loading = true;
             })
 
             .addCase(getProfile.fulfilled, (state, action) => {
+
                 state.loading = false;
-                state.user = action.payload;
+
+                state.user = action.payload.user;
+
                 state.isAuthChecked = true;
             })
 
-            .addCase(getProfile.rejected, (state) => {
+            .addCase(getProfile.rejected, (state, action) => {
+
                 state.loading = false;
+
                 state.user = null;
+
+                state.error =
+                    action.payload?.message;
+
                 state.isAuthChecked = true;
             })
 
-            
 
 
-            /* ===== LOGOUT ===== */
+            /* ================= LOGOUT ================= */
             .addCase(logoutUser.pending, (state) => {
+
                 state.loading = true;
             })
 
-            .addCase(logoutUser.fulfilled, (state) => {
+            .addCase(logoutUser.fulfilled, (state, action) => {
+
                 state.loading = false;
+
                 state.user = null;
-                state.error = null;
+
+                state.users = [];
+
+                state.success =
+                    action.payload.message ||
+                    "Logout successful";
             })
 
             .addCase(logoutUser.rejected, (state, action) => {
+
                 state.loading = false;
-                state.error = action.payload;
+
+                state.error =
+                    action.payload?.message;
             })
 
-            /* ===== UPDATE USER ===== */
-            .addCase(updateUser.pending, (state) => {
+
+
+            /* ================= GET USERS ================= */
+            .addCase(getAllUsers.pending, (state) => {
+
                 state.loading = true;
+            })
+
+            .addCase(getAllUsers.fulfilled, (state, action) => {
+
+                state.loading = false;
+
+                state.users = action.payload;
+            })
+
+            .addCase(getAllUsers.rejected, (state, action) => {
+
+                state.loading = false;
+
+                state.error =
+                    action.payload?.message;
+            })
+
+
+
+            /* ================= UPDATE USER ================= */
+            .addCase(updateUser.pending, (state) => {
+
+                state.loading = true;
+
                 state.error = null;
             })
 
             .addCase(updateUser.fulfilled, (state, action) => {
+
                 state.loading = false;
-                state.user = action.payload;
+
+                const updatedUser = action.payload.user;
+
+                state.success =
+                    action.payload.message;
+
+                // logged in user update
+                if (
+                    state.user &&
+                    state.user._id === updatedUser._id
+                ) {
+                    state.user = updatedUser;
+                }
+
+                // users list update
+                state.users = state.users.map((user) =>
+                    user._id === updatedUser._id
+                        ? updatedUser
+                        : user
+                );
             })
 
             .addCase(updateUser.rejected, (state, action) => {
+
                 state.loading = false;
-                state.error = action.payload;
+
+                state.error =
+                    action.payload?.message;
             })
 
 
-            /* ===== BLOCK USER ===== */
+
+            /* ================= BLOCK USER ================= */
             .addCase(blockUser.pending, (state) => {
+
                 state.loading = true;
-                state.error = null;
             })
 
             .addCase(blockUser.fulfilled, (state, action) => {
+
                 state.loading = false;
 
-                if (state.user?._id === action.payload._id) {
-                    state.user = action.payload;
+                const updatedUser = action.payload.user;
+
+                state.success =
+                    action.payload.message;
+
+                state.users = state.users.map((user) =>
+                    user._id === updatedUser._id
+                        ? updatedUser
+                        : user
+                );
+
+                if (
+                    state.user?._id === updatedUser._id
+                ) {
+                    state.user = updatedUser;
                 }
             })
 
-
             .addCase(blockUser.rejected, (state, action) => {
+
                 state.loading = false;
-                state.error = action.payload;
+
+                state.error =
+                    action.payload?.message;
             })
 
 
-            /* ===== UNBLOCK USER ===== */
+
+            /* ================= UNBLOCK USER ================= */
             .addCase(unblockUser.pending, (state) => {
+
                 state.loading = true;
-                state.error = null;
             })
 
             .addCase(unblockUser.fulfilled, (state, action) => {
+
                 state.loading = false;
 
-                if (state.user?._id === action.payload._id) {
-                    state.user = action.payload;
+                const updatedUser = action.payload.user;
+
+                state.success =
+                    action.payload.message;
+
+                state.users = state.users.map((user) =>
+                    user._id === updatedUser._id
+                        ? updatedUser
+                        : user
+                );
+
+                if (
+                    state.user?._id === updatedUser._id
+                ) {
+                    state.user = updatedUser;
                 }
             })
 
             .addCase(unblockUser.rejected, (state, action) => {
+
                 state.loading = false;
-                state.error = action.payload;
+
+                state.error =
+                    action.payload?.message;
+            })
+
+
+
+            /* ================= DELETE USER ================= */
+            .addCase(deleteUser.pending, (state) => {
+
+                state.loading = true;
+            })
+
+            .addCase(deleteUser.fulfilled, (state, action) => {
+
+                state.loading = false;
+
+                state.success =
+                    action.payload.message;
+
+                state.users = state.users.filter(
+                    (user) =>
+                        user._id !== action.payload.id
+                );
+
+                if (
+                    state.user?._id === action.payload.id
+                ) {
+                    state.user = null;
+                }
+            })
+
+            .addCase(deleteUser.rejected, (state, action) => {
+
+                state.loading = false;
+
+                state.error =
+                    action.payload?.message;
             });
 
-    }
+    },
 
 });
 
-export const { clearError } = authSlice.actions;
+
+
+export const {
+    clearError,
+    clearSuccess,
+} = authSlice.actions;
 
 export default authSlice.reducer;

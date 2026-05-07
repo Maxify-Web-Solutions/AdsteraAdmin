@@ -179,8 +179,6 @@ const ApprovedPayouts = () => {
 
                                         </td>
 
-
-
                                         {/* ================= CREATED DATE ================= */}
                                         <td className="px-6 py-5 text-center">
 
@@ -248,9 +246,6 @@ const ApprovedPayouts = () => {
                                             </div>
 
                                         </td>
-
-
-
                                         {/* ================= REMARK ================= */}
                                         <td className="px-6 py-5 text-center">
 

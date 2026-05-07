@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsers} from "../redux/slice/adminSlice";
-import { unblockUser, updateUser, blockUser } from "../redux/slice/authSlice";
+import { unblockUser, updateUser, blockUser, deleteUser } from "../redux/slice/authSlice";
 import { FaSearch, FaEdit, FaBan, FaUser, FaChevronLeft, FaChevronRight, FaEnvelope, FaPhone, FaCalendarAlt, FaShieldAlt, FaIdBadge, FaTimes, FaClock, FaTrash, FaSave, FaUnlock } from "react-icons/fa";
 
 const Users = () => {
@@ -70,6 +70,19 @@ const Users = () => {
         dispatch(updateUser({ id: editData._id, userData: editData }));
         setIsEditOpen(false);
     };
+    const handleDelete = async (id) => {
+
+    if (
+        window.confirm(
+            "Are you sure you want to delete this user?"
+        )
+    ) {
+
+        await dispatch(deleteUser(id));
+
+        dispatch(getUsers());
+    }
+};
 
     // Stats
     const stats = {
@@ -227,6 +240,13 @@ const Users = () => {
                                                         <FaBan size={14} />
                                                     </button>
                                                 )}
+                                                <button 
+    onClick={() => handleDelete(user._id)}
+    title="Delete User" 
+    className="p-2 text-rose-400 hover:text-white rounded-lg bg-rose-500/10 hover:bg-rose-500/20 transition border border-rose-500/20"
+>
+    <FaTrash size={14} />
+</button>
                                             </div>
                                         </td>
                                     </tr>
