@@ -87,6 +87,8 @@ const AdminLayout = () => {
                         </Link>
                         <Link to="/dashboard/key " onClick={() => setOpen(false)} className={linkClass("/dashboard/key")}>Update-Key</Link>
 
+                        <Link to="/dashboard/payouts " onClick={() => setOpen(false)} className={linkClass("/dashboard/payouts")}>Payouts</Link>
+
                         <Link to="/dashboard/profile" onClick={() => setOpen(false)} className={linkClass("/dashboard/profile")}>
                             Profile
                         </Link>
