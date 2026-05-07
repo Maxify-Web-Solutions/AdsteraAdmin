@@ -15,7 +15,7 @@ const ApprovedLinks = () => {
 
     const links = approved || [];
 
-    const filteredLinks = links.filter(link => 
+    const filteredLinks = links.filter(link =>
         link.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         link.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         link.userId?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -75,14 +75,14 @@ const ApprovedLinks = () => {
                                 <th className="px-6 py-4 font-semibold">Smartlink Details</th>
                                 <th className="px-6 py-4 font-semibold">Tracking URL</th>
                                 <th className="px-6 py-4 font-semibold text-center">Status</th>
-                                <th className="px-6 py-4 font-semibold text-right">Created</th>
+                                <th className="px-6 py-4 font-semibold text-right">Dates</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-700">
                             {loading ? (
                                 <tr>
                                     <td colSpan="6" className="px-6 py-16 text-center text-slate-400">
-                                         <div className="flex items-center justify-center">
+                                        <div className="flex items-center justify-center">
                                             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500"></div>
                                         </div>
                                     </td>
@@ -110,14 +110,14 @@ const ApprovedLinks = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                             <div className="flex flex-col gap-1 max-w-[220px]">
+                                            <div className="flex flex-col gap-1 max-w-[220px]">
                                                 <div className="flex items-center gap-2 bg-slate-900/50 p-1.5 rounded border border-slate-700 group-hover:border-slate-600 transition">
                                                     <FaLink className="text-slate-500 min-w-[12px]" size={12} />
                                                     <span className="truncate text-emerald-400 text-xs font-mono select-all">
                                                         {item.finalUrl || 'No URL generated'}
                                                     </span>
                                                     {item.finalUrl && (
-                                                        <button 
+                                                        <button
                                                             onClick={() => handleCopy(item.finalUrl)}
                                                             className="ml-auto text-slate-500 hover:text-white transition"
                                                             title="Copy Link"
@@ -135,7 +135,7 @@ const ApprovedLinks = () => {
                                                         </a>
                                                     </div>
                                                 )}
-                                             </div>
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4 text-center">
                                             <span className="px-3 py-1 rounded-full text-xs font-semibold capitalize border bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
@@ -143,14 +143,60 @@ const ApprovedLinks = () => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <div className="flex flex-col items-end gap-1">
-                                                <span className="text-slate-300 text-sm font-medium">
-                                                    {new Date(item.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                                                </span>
-                                                <span className="text-xs text-slate-500 flex items-center gap-1">
-                                                    <FaRegCalendarAlt size={10} />
-                                                    {new Date(item.createdAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
-                                                </span>
+                                            <div className="flex flex-col items-end gap-3">
+
+                                                {/* Created At */}
+                                                <div className="flex flex-col items-end">
+                                                    <span className="text-[10px] uppercase tracking-wider text-slate-500">
+                                                        Created
+                                                    </span>
+
+                                                    <span className="text-slate-300 text-sm font-medium">
+                                                        {new Date(item.createdAt).toLocaleDateString(undefined, {
+                                                            month: 'short',
+                                                            day: 'numeric',
+                                                            year: 'numeric'
+                                                        })}
+                                                    </span>
+
+                                                    <span className="text-xs text-slate-500 flex items-center gap-1">
+                                                        <FaRegCalendarAlt size={10} />
+                                                        {new Date(item.createdAt).toLocaleTimeString(undefined, {
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                            second: '2-digit'
+                                                        })}
+                                                    </span>
+                                                </div>
+
+                                                {/* Approved At */}
+                                                <div className="flex flex-col items-end">
+                                                    <span className="text-[10px] uppercase tracking-wider text-emerald-500">
+                                                        Approved
+                                                    </span>
+
+                                                    <span className="text-emerald-400 text-sm font-medium">
+                                                        {item.approvedAt
+                                                            ? new Date(item.approvedAt).toLocaleDateString(undefined, {
+                                                                month: 'short',
+                                                                day: 'numeric',
+                                                                year: 'numeric'
+                                                            })
+                                                            : "N/A"}
+                                                    </span>
+
+                                                    <span className="text-xs text-slate-500 flex items-center gap-1">
+                                                        <FaRegCalendarAlt size={10} />
+                                                        {item.approvedAt
+                                                            ? new Date(item.approvedAt).toLocaleTimeString(undefined, {
+                                                                hour: '2-digit',
+                                                                minute: '2-digit',
+                                                                second: '2-digit'
+                                                            })
+                                                            : "--"}
+                                                    </span>
+                                                </div>
+
                                             </div>
                                         </td>
                                     </tr>
