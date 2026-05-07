@@ -75,7 +75,8 @@ const ApprovedLinks = () => {
                                 <th className="px-6 py-4 font-semibold">Smartlink Details</th>
                                 <th className="px-6 py-4 font-semibold">Tracking URL</th>
                                 <th className="px-6 py-4 font-semibold text-center">Status</th>
-                                <th className="px-6 py-4 font-semibold text-right">Dates</th>
+                                <th className="px-6 py-4 font-semibold text-center">Created</th>
+                                <th className="px-6 py-4 font-semibold text-center text-[#33D399]">Approved</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-700">
@@ -142,63 +143,49 @@ const ApprovedLinks = () => {
                                                 {item.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex flex-col items-end gap-3">
+                                        <td className="px-6 py-4 text-center">
+    <div className="flex flex-col items-center">
+        <span className="text-slate-300 text-sm font-medium whitespace-nowrap">
+            {new Date(item.createdAt).toLocaleDateString(undefined, {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            })}
+        </span>
 
-                                                {/* Created At */}
-                                                <div className="flex flex-col items-end">
-                                                    <span className="text-[10px] uppercase tracking-wider text-slate-500">
-                                                        Created
-                                                    </span>
+        <span className="text-xs text-slate-500 flex items-center gap-1 mt-1 whitespace-nowrap">
+            <FaRegCalendarAlt size={10} />
+            {new Date(item.createdAt).toLocaleTimeString(undefined, {
+                hour: '2-digit',
+                minute: '2-digit'
+            })}
+        </span>
+    </div>
+</td>
 
-                                                    <span className="text-slate-300 text-sm font-medium">
-                                                        {new Date(item.createdAt).toLocaleDateString(undefined, {
-                                                            month: 'short',
-                                                            day: 'numeric',
-                                                            year: 'numeric'
-                                                        })}
-                                                    </span>
+<td className="px-6 py-4 text-center">
+    <div className="flex flex-col items-center">
+        <span className="text-emerald-400 text-sm font-medium whitespace-nowrap">
+            {item.approvedAt
+                ? new Date(item.approvedAt).toLocaleDateString(undefined, {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                })
+                : "N/A"}
+        </span>
 
-                                                    <span className="text-xs text-slate-500 flex items-center gap-1">
-                                                        <FaRegCalendarAlt size={10} />
-                                                        {new Date(item.createdAt).toLocaleTimeString(undefined, {
-                                                            hour: '2-digit',
-                                                            minute: '2-digit',
-                                                            second: '2-digit'
-                                                        })}
-                                                    </span>
-                                                </div>
-
-                                                {/* Approved At */}
-                                                <div className="flex flex-col items-end">
-                                                    <span className="text-[10px] uppercase tracking-wider text-emerald-500">
-                                                        Approved
-                                                    </span>
-
-                                                    <span className="text-emerald-400 text-sm font-medium">
-                                                        {item.approvedAt
-                                                            ? new Date(item.approvedAt).toLocaleDateString(undefined, {
-                                                                month: 'short',
-                                                                day: 'numeric',
-                                                                year: 'numeric'
-                                                            })
-                                                            : "N/A"}
-                                                    </span>
-
-                                                    <span className="text-xs text-slate-500 flex items-center gap-1">
-                                                        <FaRegCalendarAlt size={10} />
-                                                        {item.approvedAt
-                                                            ? new Date(item.approvedAt).toLocaleTimeString(undefined, {
-                                                                hour: '2-digit',
-                                                                minute: '2-digit',
-                                                                second: '2-digit'
-                                                            })
-                                                            : "--"}
-                                                    </span>
-                                                </div>
-
-                                            </div>
-                                        </td>
+        <span className="text-xs text-slate-500 flex items-center gap-1 mt-1 whitespace-nowrap">
+            <FaRegCalendarAlt size={10} />
+            {item.approvedAt
+                ? new Date(item.approvedAt).toLocaleTimeString(undefined, {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })
+                : "--"}
+        </span>
+    </div>
+</td>
                                     </tr>
                                 ))
                             ) : (
