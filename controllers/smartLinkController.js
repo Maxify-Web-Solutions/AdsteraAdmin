@@ -70,15 +70,21 @@ exports.getSmartLinksByUser = async (req, res) => {
 exports.approveSmartLink = async (req, res) => {
     try {
         const { id } = req.params;
-        const { redirectUrl } = req.body;
+        const { redirectUrl, placementId } = req.body;
 
         const updateData = {
             status: "approved",
-            approvedAt: Date.now(), // ✅ current date & time
+            approvedAt: Date.now(),
         };
 
+        // ✅ add redirectUrl if provided
         if (redirectUrl) {
             updateData.redirectUrl = redirectUrl;
+        }
+
+        // ✅ add placementId if provided
+        if (placementId) {
+            updateData.placementId = placementId;
         }
 
         const smartLink = await SmartLink.findByIdAndUpdate(
