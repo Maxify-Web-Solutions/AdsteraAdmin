@@ -46,30 +46,73 @@ const PendingLinks = () => {
     };
 
     const handleApprove = async (link) => {
-        const { value: url } = await Swal.fire({
-            title: 'Approve Smartlink',
-            input: 'url',
-            inputLabel: 'Redirect URL',
-            inputValue: "",
-            showCancelButton: true,
-            confirmButtonText: 'Approve',
-            background: "#1e293b",
-            color: "#fff",
-            confirmButtonColor: "#22c55e",
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'You need to enter URL!'
-                }
-            }
-        });
 
-    if (url) {
+    const { value: formValues } = await Swal.fire({
+        title: 'Approve Smartlink',
+        html:
+            `
+            <input 
+                id="swal-input1" 
+                class="swal2-input" 
+                placeholder="Enter Redirect URL"
+            />
+
+            <input 
+                id="swal-input2" 
+                class="swal2-input" 
+                placeholder="Enter Placement ID"
+            />
+            `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Approve',
+        background: "#1e293b",
+        color: "#fff",
+        confirmButtonColor: "#22c55e",
+
+        preConfirm: () => {
+
+            const redirectUrl =
+                document.getElementById('swal-input1').value;
+
+            const placementId =
+                document.getElementById('swal-input2').value;
+
+            if (!redirectUrl) {
+                Swal.showValidationMessage(
+                    'Redirect URL is required'
+                );
+                return false;
+            }
+
+            if (!placementId) {
+                Swal.showValidationMessage(
+                    'Placement ID is required'
+                );
+                return false;
+            }
+
+            return {
+                redirectUrl,
+                placementId,
+            };
+        }
+    });
+
+    if (formValues) {
+
         try {
+
             const res = await dispatch(
-                approveSmartLink({ id: link._id, redirectUrl: url })
+                approveSmartLink({
+                    id: link._id,
+                    redirectUrl: formValues.redirectUrl,
+                    placementId: formValues.placementId,
+                })
             );
 
             if (res.meta.requestStatus === "fulfilled") {
+
                 await Swal.fire({
                     icon: "success",
                     title: "Approved!",
@@ -79,10 +122,16 @@ const PendingLinks = () => {
                     background: "#1e293b",
                     color: "#fff"
                 });
+
             } else {
-                throw new Error(res.payload);
+
+                throw new Error(
+                    res.payload?.message || "Approval failed"
+                );
             }
+
         } catch (err) {
+
             Swal.fire({
                 icon: "error",
                 title: "Error",

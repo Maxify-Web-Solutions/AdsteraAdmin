@@ -77,14 +77,17 @@ export const getAllSmartLinks = createAsyncThunk(
 export const approveSmartLink = createAsyncThunk(
     "smartLink/approve",
     async (
-        { id, redirectUrl },
+        { id, redirectUrl, placementId },
         { rejectWithValue }
     ) => {
         try {
 
             const res = await api.put(
                 `/smartlink/approve/${id}`,
-                { redirectUrl }
+                {
+                    redirectUrl,
+                    placementId,
+                }
             );
 
             return res.data.smartLink;
