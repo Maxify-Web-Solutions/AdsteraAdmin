@@ -72,26 +72,7 @@ exports.approveSmartLink = async (req, res) => {
         const { id } = req.params;
         const { redirectUrl, placementId } = req.body;
 
-        const updateData = {
-            status: "approved",
-            approvedAt: Date.now(),
-        };
-
-        // ✅ add redirectUrl if provided
-        if (redirectUrl) {
-            updateData.redirectUrl = redirectUrl;
-        }
-
-        // ✅ add placementId if provided
-        if (placementId) {
-            updateData.placementId = placementId;
-        }
-
-        const smartLink = await SmartLink.findByIdAndUpdate(
-            id,
-            updateData,
-            { new: true }
-        );
+        const smartLink = await SmartLink.findById(id);
 
         if (!smartLink) {
             return res.status(404).json({
@@ -100,16 +81,31 @@ exports.approveSmartLink = async (req, res) => {
             });
         }
 
-        res.json({
+        // ✅ update fields
+        smartLink.status = "approved";
+        smartLink.approvedAt = new Date(); // ✅ current date + time
+
+        // optional fields
+        if (redirectUrl) {
+            smartLink.redirectUrl = redirectUrl;
+        }
+
+        if (placementId) {
+            smartLink.placementId = placementId;
+        }
+
+        const updatedSmartLink = await smartLink.save();
+
+        return res.json({
             success: true,
             message: "Approved successfully",
-            smartLink,
+            smartLink: updatedSmartLink,
         });
 
     } catch (err) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
-            error: err.message
+            error: err.message,
         });
     }
 };
