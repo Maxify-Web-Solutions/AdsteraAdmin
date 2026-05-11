@@ -1,6 +1,6 @@
 // controllers/configController.js
 
-const Config = require("../models/Config");
+const Config = require("../models/configModel");
 
 // ======================================
 // GET CONFIG

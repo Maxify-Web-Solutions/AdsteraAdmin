@@ -1,86 +1,203 @@
 // redux/slice/configSlice.js
 
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { api } from "./axiosConfig"; // axios instance
+import {
+  createSlice,
+  createAsyncThunk,
+} from "@reduxjs/toolkit";
+
+import { api } from "./axiosConfig";
 
 // ==========================
-// 🔐 Update API Key (Admin)
+// 🔐 UPDATE CONFIG (ADMIN)
 // ==========================
-export const updateAdsterraKey = createAsyncThunk(
-  "config/updateKey",
-  async (data, { rejectWithValue }) => {
-    try {
-      const res = await api.put("/admin/adsterra-key", data);
-      return res.data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
+
+export const updateConfig =
+  createAsyncThunk(
+    "config/updateConfig",
+    async (
+      payload,
+      { rejectWithValue }
+    ) => {
+      try {
+        const res =
+          await api.put(
+  "/admin/adsterra-key",
+  payload
 );
 
-// ==========================
-// 🌐 Get API Key
-// ==========================
-export const getAdsterraKey = createAsyncThunk(
-  "config/getKey",
-  async (_, { rejectWithValue }) => {
-    try {
-      const res = await api.get("/config/adsterra-key");
-      return res.data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
+        return res.data;
+      } catch (err) {
+        return rejectWithValue(
+          err.response?.data ||
+            err.message
+        );
+      }
     }
-  }
-);
+  );
 
 // ==========================
-// Slice
+// 🌐 GET CONFIG
 // ==========================
-const configSlice = createSlice({
-  name: "config",
-  initialState: {
-    apiKey: null,
-    loading: false,
-    success: false,
-    error: null,
-  },
-  reducers: {
-    clearConfigState: (state) => {
-      state.loading = false;
-      state.success = false;
-      state.error = null;
+
+export const getConfig =
+  createAsyncThunk(
+    "config/getConfig",
+    async (
+      _,
+      { rejectWithValue }
+    ) => {
+      try {
+        const res =
+          await api.get(
+            "/config/adsterra-key"
+          );
+
+        return res.data;
+      } catch (err) {
+        return rejectWithValue(
+          err.response?.data ||
+            err.message
+        );
+      }
+    }
+  );
+
+// ==========================
+// SLICE
+// ==========================
+
+const configSlice =
+  createSlice({
+    name: "config",
+
+    initialState: {
+      config: null,
+
+      loading: false,
+      updateLoading: false,
+
+      success: false,
+
+      message: "",
+
+      error: null,
     },
-  },
-  extraReducers: (builder) => {
-    builder
 
-      // 🔐 UPDATE
-      .addCase(updateAdsterraKey.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(updateAdsterraKey.fulfilled, (state) => {
-        state.loading = false;
-        state.success = true;
-      })
-      .addCase(updateAdsterraKey.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+    reducers: {
+      clearConfigState:
+        (state) => {
+          state.loading = false;
 
-      // 🌐 GET
-      .addCase(getAdsterraKey.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(getAdsterraKey.fulfilled, (state, action) => {
-        state.loading = false;
-        state.apiKey = action.payload.adsterraApiKey;
-      })
-      .addCase(getAdsterraKey.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
-  },
-});
+          state.updateLoading = false;
 
-export const { clearConfigState } = configSlice.actions;
+          state.success = false;
+
+          state.error = null;
+
+          state.message = "";
+        },
+    },
+
+    extraReducers: (
+      builder
+    ) => {
+      builder
+
+        // ==========================
+        // 🔐 UPDATE CONFIG
+        // ==========================
+
+        .addCase(
+          updateConfig.pending,
+          (state) => {
+            state.updateLoading = true;
+
+            state.success = false;
+
+            state.error = null;
+          }
+        )
+
+        .addCase(
+          updateConfig.fulfilled,
+          (
+            state,
+            action
+          ) => {
+            state.updateLoading = false;
+
+            state.success = true;
+
+            state.message =
+              action.payload.message;
+
+            state.config =
+              action.payload.data;
+          }
+        )
+
+        .addCase(
+          updateConfig.rejected,
+          (
+            state,
+            action
+          ) => {
+            state.updateLoading = false;
+
+            state.success = false;
+
+            state.error =
+              action.payload
+                ?.message ||
+              "Failed to update config";
+          }
+        )
+
+        // ==========================
+        // 🌐 GET CONFIG
+        // ==========================
+
+        .addCase(
+          getConfig.pending,
+          (state) => {
+            state.loading = true;
+
+            state.error = null;
+          }
+        )
+
+        .addCase(
+          getConfig.fulfilled,
+          (
+            state,
+            action
+          ) => {
+            state.loading = false;
+
+            state.config =
+              action.payload.data;
+          }
+        )
+
+        .addCase(
+          getConfig.rejected,
+          (
+            state,
+            action
+          ) => {
+            state.loading = false;
+
+            state.error =
+              action.payload
+                ?.message ||
+              "Failed to fetch config";
+          }
+        );
+    },
+  });
+
+export const {
+  clearConfigState,
+} = configSlice.actions;
+
 export default configSlice.reducer;
