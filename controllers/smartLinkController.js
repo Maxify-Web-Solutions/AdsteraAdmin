@@ -465,3 +465,47 @@ exports.deleteSmartLink = async (req, res) => {
         });
     }
 };
+
+
+// ================= EDIT SMART LINK =================
+exports.editSmartLink = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const { linkId, redirectUrl } = req.body;
+
+        // FIND LINK
+        const smartLink = await SmartLink.findById(id);
+
+        if (!smartLink) {
+            return res.status(404).json({
+                success: false,
+                message: "SmartLink not found",
+            });
+        }
+
+        // UPDATE FIELDS
+        if (linkId) {
+            smartLink.linkId = linkId;
+        }
+
+        if (redirectUrl) {
+            smartLink.redirectUrl = redirectUrl;
+        }
+
+        // SAVE
+        const updatedLink = await smartLink.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "SmartLink updated successfully",
+            data: updatedLink,
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
