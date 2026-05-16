@@ -123,6 +123,39 @@ export const rejectSmartLink = createAsyncThunk(
     }
 );
 
+// ================= EDIT =================
+export const editSmartLink = createAsyncThunk(
+    "smartLink/edit",
+
+    async (
+        {
+            id,
+            placementId,
+            redirectUrl,
+        },
+        { rejectWithValue }
+    ) => {
+        try {
+
+            const res = await api.put(
+                `/smartlink/edit-smartlink/${id}`,
+                {
+                    placementId,
+                    redirectUrl,
+                }
+            );
+
+            return res.data.smartLink;
+
+        } catch (err) {
+
+            return rejectWithValue(
+                err.response?.data ||
+                err.message
+            );
+        }
+    }
+);
 
 // ================= DELETE =================
 export const deleteSmartLink = createAsyncThunk(

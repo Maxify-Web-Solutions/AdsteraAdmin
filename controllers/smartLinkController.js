@@ -468,44 +468,98 @@ exports.deleteSmartLink = async (req, res) => {
 
 
 // ================= EDIT SMART LINK =================
-exports.editSmartLink = async (req, res) => {
+
+// ================= EDIT SMART LINK =================
+
+exports.editSmartLink = async (
+    req,
+    res
+) => {
     try {
+
         const { id } = req.params;
 
-        const { linkId, redirectUrl } = req.body;
+        const {
+            redirectUrl,
+            placementId,
+        } = req.body;
 
-        // FIND LINK
-        const smartLink = await SmartLink.findById(id);
+        // ==========================================
+        // FIND SMART LINK
+        // ==========================================
+
+        const smartLink =
+            await SmartLink.findById(id);
 
         if (!smartLink) {
             return res.status(404).json({
                 success: false,
-                message: "SmartLink not found",
+
+                message:
+                    "Smart link not found",
             });
         }
 
+        // ==========================================
         // UPDATE FIELDS
-        if (linkId) {
-            smartLink.linkId = linkId;
+        // ==========================================
+
+        // REDIRECT URL
+        if (
+            redirectUrl !== undefined
+        ) {
+            smartLink.redirectUrl =
+                redirectUrl;
         }
 
-        if (redirectUrl) {
-            smartLink.redirectUrl = redirectUrl;
+        // PLACEMENT ID
+        if (
+            placementId !== undefined
+        ) {
+
+            // IMPORTANT
+            // convert to string
+
+            smartLink.placementId =
+                String(
+                    placementId
+                ).trim();
         }
 
-        // SAVE
-        const updatedLink = await smartLink.save();
+        // ==========================================
+        // SAVE UPDATED LINK
+        // ==========================================
+
+        await smartLink.save();
+
+        // ==========================================
+        // FETCH UPDATED DATA
+        // ==========================================
+
+        const updatedSmartLink =
+            await SmartLink.findById(id);
+
+        // ==========================================
+        // RESPONSE
+        // ==========================================
 
         return res.status(200).json({
             success: true,
-            message: "SmartLink updated successfully",
-            data: updatedLink,
+
+            message:
+                "SmartLink updated successfully",
+
+            smartLink:
+                updatedSmartLink,
         });
 
-    } catch (error) {
+    } catch (err) {
+
         return res.status(500).json({
             success: false,
-            message: error.message,
+
+            message:
+                err.message,
         });
     }
 };
