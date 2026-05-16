@@ -23,6 +23,7 @@ import ManagePayouts from "./Pages/ManagePayouts";
 import PendingPayouts from "./Pages/PendingPayouts";
 import RejectedPayouts from "./Pages/RejectedPayout";
 import ApprovedPayouts from "./Pages/ApprovedPayouts";
+import StatsConfigPage from "./Pages/StatsConfigPage";
 
 function App() {
 
@@ -57,6 +58,7 @@ function App() {
           <Route path="approved_Payouts" element={<ApprovedPayouts />} />
           <Route path="profile" element={<Profile />} />
           <Route path ="key"    element={<AdminAdsterra />} />  
+          <Route path ="stats"    element={<StatsConfigPage />} />  
         </Route>
       </Route>
 
